@@ -1,0 +1,1282 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[11pt]{article}
+
+    
+    
+    \usepackage[T1]{fontenc}
+    % Nicer default font (+ math font) than Computer Modern for most use cases
+    \usepackage{mathpazo}
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % We will generate all images so they have a width \maxwidth. This means
+    % that they will get their normal width if they fit onto the page, but
+    % are scaled down if they would overflow the margins.
+    \makeatletter
+    \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+    \else\Gin@nat@width\fi}
+    \makeatother
+    \let\Oldincludegraphics\includegraphics
+    % Set max figure width to be 80% of text width, for now hardcoded.
+    \renewcommand{\includegraphics}[1]{\Oldincludegraphics[width=.8\maxwidth]{#1}}
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionLabelFormat{nolabel}{}
+    \captionsetup{labelformat=nolabel}
+
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    
+
+    
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{CS6700 | Reinforcement Learning | Assignment 2}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@dl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@fm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sa\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \subsubsection{Avinash G. Kori \textbar{}
+ED15B006}\label{avinash-g.-kori-ed15b006}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k+kn}{as} \PY{n+nn}{np}
+        \PY{k+kn}{import} \PY{n+nn}{seaborn} \PY{k+kn}{as} \PY{n+nn}{sns}
+        \PY{k+kn}{import} \PY{n+nn}{matplotlib.pyplot} \PY{k+kn}{as} \PY{n+nn}{plt}
+        
+        \PY{k}{def} \PY{n+nf}{imshow}\PY{p}{(}\PY{n}{args}\PY{p}{)}\PY{p}{:}
+            \PY{k}{if} \PY{n+nb}{len}\PY{p}{(}\PY{n}{args}\PY{p}{)}\PY{o}{==}\PY{l+m+mi}{1}\PY{p}{:}
+                \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{args}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{interpolation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{none}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+            \PY{k}{else}\PY{p}{:}
+                \PY{n}{n}\PY{o}{=}\PY{n+nb}{int}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{args}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mf}{0.5}\PY{p}{)}
+                \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{15}\PY{p}{)}\PY{p}{)}
+                \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{args}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+                    \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{n}{n} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{n}\PY{p}{,}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}
+                    \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{args}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}
+            \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    \section{Question 1}\label{question-1}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}2}]:} \PY{k}{class} \PY{n+nc}{Question1}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
+            \PY{k}{def} \PY{n+nf+fm}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{alpha} \PY{o}{=} \PY{l+m+mf}{0.95}\PY{p}{)}\PY{p}{:}
+                \PY{c+c1}{\PYZsh{} define probabilities}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}
+                        \PY{p}{[}\PY{p}{[}\PY{l+m+mf}{0.5}   \PY{p}{,} \PY{l+m+mf}{0.25} \PY{p}{,} \PY{l+m+mf}{0.250} \PY{p}{]}\PY{p}{,}
+                         \PY{p}{[}\PY{l+m+mf}{1.}\PY{o}{/}\PY{l+m+mf}{16.}\PY{p}{,} \PY{l+m+mf}{3.}\PY{o}{/}\PY{l+m+mf}{4.}\PY{p}{,} \PY{l+m+mf}{3.}\PY{o}{/}\PY{l+m+mf}{16.}\PY{p}{]}\PY{p}{,}
+                         \PY{p}{[}\PY{l+m+mf}{1.}\PY{o}{/}\PY{l+m+mf}{4.} \PY{p}{,} \PY{l+m+mf}{1.}\PY{o}{/}\PY{l+m+mf}{8.}\PY{p}{,} \PY{l+m+mf}{5.}\PY{o}{/}\PY{l+m+mf}{8.} \PY{p}{]}\PY{p}{]}\PY{p}{,}
+                        \PY{p}{[}\PY{p}{[}\PY{l+m+mf}{1.}\PY{o}{/}\PY{l+m+mf}{2.} \PY{p}{,} \PY{l+m+mf}{0.}   \PY{p}{,} \PY{l+m+mf}{1.}\PY{o}{/}\PY{l+m+mf}{2.} \PY{p}{]}\PY{p}{,}
+                         \PY{p}{[}\PY{l+m+mf}{1.}\PY{o}{/}\PY{l+m+mf}{16.} \PY{p}{,} \PY{l+m+mf}{7.}\PY{o}{/}\PY{l+m+mf}{8.}\PY{p}{,} \PY{l+m+mf}{1.}\PY{o}{/}\PY{l+m+mf}{16.}\PY{p}{]}\PY{p}{,}
+                         \PY{p}{[}\PY{l+m+mf}{0.}    \PY{p}{,}   \PY{l+m+mf}{1.} \PY{p}{,} \PY{l+m+mi}{0}     \PY{p}{]}\PY{p}{]}\PY{p}{,}
+                        \PY{p}{[}\PY{p}{[}\PY{l+m+mf}{1.}\PY{o}{/}\PY{l+m+mf}{4.} \PY{p}{,} \PY{l+m+mf}{1.}\PY{o}{/}\PY{l+m+mf}{4.}\PY{p}{,} \PY{l+m+mf}{1.}\PY{o}{/}\PY{l+m+mf}{2.} \PY{p}{]}\PY{p}{,}
+                         \PY{p}{[}\PY{l+m+mf}{1.}\PY{o}{/}\PY{l+m+mf}{8.} \PY{p}{,} \PY{l+m+mf}{3.}\PY{o}{/}\PY{l+m+mf}{4.}\PY{p}{,} \PY{l+m+mf}{1.}\PY{o}{/}\PY{l+m+mf}{8.} \PY{p}{]}\PY{p}{,}
+                         \PY{p}{[}\PY{l+m+mf}{3.}\PY{o}{/}\PY{l+m+mf}{4.} \PY{p}{,}\PY{l+m+mf}{1.}\PY{o}{/}\PY{l+m+mf}{16.}\PY{p}{,} \PY{l+m+mf}{3.}\PY{o}{/}\PY{l+m+mf}{16.}\PY{p}{]}\PY{p}{]}
+                    \PY{p}{]}\PY{p}{)}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{swapaxes}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)} \PY{c+c1}{\PYZsh{} S, a, S\PYZsq{}}
+                
+                \PY{c+c1}{\PYZsh{} define rewards}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}
+                        \PY{p}{[}\PY{p}{[}\PY{l+m+mf}{10.}\PY{p}{,} \PY{l+m+mf}{4.}\PY{p}{,} \PY{l+m+mf}{8.}\PY{p}{]}\PY{p}{,}
+                         \PY{p}{[}\PY{l+m+mf}{8.}\PY{p}{,}  \PY{l+m+mf}{2.}\PY{p}{,} \PY{l+m+mf}{4.}\PY{p}{]}\PY{p}{,}
+                         \PY{p}{[}\PY{l+m+mf}{4.}\PY{p}{,}  \PY{l+m+mf}{6.}\PY{p}{,} \PY{l+m+mf}{4.}\PY{p}{]}\PY{p}{]}\PY{p}{,}
+                        \PY{p}{[}\PY{p}{[}\PY{l+m+mf}{14.}\PY{p}{,} \PY{l+m+mf}{0.}\PY{p}{,} \PY{l+m+mf}{18.}\PY{p}{]}\PY{p}{,}
+                         \PY{p}{[}\PY{l+m+mf}{8.}\PY{p}{,} \PY{l+m+mf}{16.}\PY{p}{,} \PY{l+m+mf}{08.}\PY{p}{]}\PY{p}{,}
+                         \PY{p}{[}\PY{l+m+mf}{0.}\PY{p}{,}  \PY{l+m+mf}{0.}\PY{p}{,} \PY{l+m+mf}{0.} \PY{p}{]}\PY{p}{]}\PY{p}{,}
+                        \PY{p}{[}\PY{p}{[}\PY{l+m+mf}{10.}\PY{p}{,} \PY{l+m+mf}{2.}\PY{p}{,} \PY{l+m+mf}{8.} \PY{p}{]}\PY{p}{,}
+                         \PY{p}{[}\PY{l+m+mf}{6.} \PY{p}{,} \PY{l+m+mf}{4.}\PY{p}{,} \PY{l+m+mf}{2.} \PY{p}{]}\PY{p}{,}
+                         \PY{p}{[}\PY{l+m+mf}{4.} \PY{p}{,} \PY{l+m+mf}{0.}\PY{p}{,} \PY{l+m+mf}{8.}\PY{p}{]}\PY{p}{]}
+                    \PY{p}{]}\PY{p}{)}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{swapaxes}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)} \PY{c+c1}{\PYZsh{} S, a, S\PYZsq{}}
+                \PY{c+c1}{\PYZsh{} init J}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{alpha} \PY{o}{=} \PY{n}{alpha}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{J} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{p}{[}\PY{l+m+mf}{0.}\PY{p}{,} \PY{l+m+mf}{0.}\PY{p}{,} \PY{l+m+mf}{0.}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{p}{)} \PY{c+c1}{\PYZsh{} 1x1x3}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Jpi} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{p}{[}\PY{l+m+mf}{0.}\PY{p}{,} \PY{l+m+mf}{0.}\PY{p}{,} \PY{l+m+mf}{0.}\PY{p}{]}\PY{p}{]}\PY{p}{]}\PY{p}{)} \PY{c+c1}{\PYZsh{} 1x1x3}
+                
+            \PY{k}{def} \PY{n+nf}{Toperator}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{J}\PY{p}{)}\PY{p}{:}
+                \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{            Applies T operator for current J}
+        \PY{l+s+sd}{        \PYZdq{}\PYZdq{}\PYZdq{}}
+                \PY{n}{J} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{*}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g} \PY{o}{+} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{alpha}\PY{o}{*}\PY{n}{J}\PY{p}{)}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+                \PY{k}{return} \PY{n}{J}
+            
+            \PY{k}{def} \PY{n+nf}{optPolicy}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{J}\PY{p}{)}\PY{p}{:}
+                \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{            Finds optimal policy for current states}
+        \PY{l+s+sd}{        \PYZdq{}\PYZdq{}\PYZdq{}}
+                \PY{n}{optP} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{*}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g} \PY{o}{+} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{alpha}\PY{o}{*}\PY{n}{J}\PY{p}{)}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+                \PY{k}{return} \PY{n}{optP} 
+            
+            \PY{k}{def} \PY{n+nf}{Tpioperator}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{Policy}\PY{p}{,} \PY{n}{Jpi}\PY{p}{)}\PY{p}{:}
+                \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{            Applies Tpi operator for current Jpi}
+        \PY{l+s+sd}{        \PYZdq{}\PYZdq{}\PYZdq{}}
+                \PY{n}{P} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+                \PY{n}{G} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+                \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{Policy}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+                    \PY{n}{P}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{Policy}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{p}{:}\PY{p}{]}
+                    \PY{n}{G}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{Policy}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{p}{:}\PY{p}{]}
+                    
+                \PY{n}{Jpi} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{P}\PY{o}{*}\PY{n}{G}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{n+nb+bp}{None}\PY{p}{]} \PY{o}{+} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{alpha}\PY{o}{*}\PY{n}{P}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{Jpi}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+                \PY{n}{Jpi} \PY{o}{=} \PY{n}{Jpi}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+                \PY{k}{return} \PY{n}{Jpi}
+            
+            \PY{k}{def} \PY{n+nf}{PolicyEvaluation}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{Policy}\PY{p}{,} \PY{n}{J}\PY{p}{,} \PY{n}{M} \PY{o}{=} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{:}
+                \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{            Policy evaluation function}
+        \PY{l+s+sd}{            M = None, performs policy evaluation}
+        \PY{l+s+sd}{            M \PYZgt{} 0, performs modified policy evaluation}
+        \PY{l+s+sd}{        \PYZdq{}\PYZdq{}\PYZdq{}}
+                \PY{k}{if} \PY{n}{M}\PY{p}{:}
+                    \PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{M}\PY{p}{)}\PY{p}{:}
+                        \PY{n}{J} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Tpioperator}\PY{p}{(}\PY{n}{Policy}\PY{p}{,} \PY{n}{J}\PY{p}{)}
+                \PY{k}{else}\PY{p}{:}
+                    \PY{n}{I} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{eye}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+                    \PY{n}{P} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+                    \PY{n}{G} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+                    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{Policy}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+                        \PY{n}{P}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{Policy}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{p}{:}\PY{p}{]}
+                        \PY{n}{G}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{Policy}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{p}{:}\PY{p}{]}
+                    \PY{n}{J} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{P}\PY{o}{*}\PY{n}{G}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{[}\PY{n+nb+bp}{None}\PY{p}{,} \PY{p}{:}\PY{p}{]}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{inv}\PY{p}{(}\PY{n}{I} \PY{o}{\PYZhy{}} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{alpha}\PY{o}{*}\PY{n}{P}\PY{p}{)}\PY{p}{)}
+                    \PY{n}{J} \PY{o}{=} \PY{n}{J}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+                \PY{k}{return} \PY{n}{J}
+            
+            \PY{k}{def} \PY{n+nf}{PolicyUpdate}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{Jpi}\PY{p}{)}\PY{p}{:}
+                \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{            Tpi\PYZus{}new Jpi = TJpi finds new policy}
+        \PY{l+s+sd}{        \PYZdq{}\PYZdq{}\PYZdq{}}
+                \PY{n}{Policy} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{optPolicy}\PY{p}{(}\PY{n}{Jpi}\PY{p}{)}
+                \PY{k}{return} \PY{n}{Policy}
+            
+            \PY{k}{def} \PY{n+nf}{ValueIteration}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{N} \PY{o}{=} \PY{l+m+mi}{1000}\PY{p}{)}\PY{p}{:}
+                \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{            Input Args:}
+        \PY{l+s+sd}{                N: number of iterations}
+        \PY{l+s+sd}{            returns:}
+        \PY{l+s+sd}{                J: optimal J}
+        \PY{l+s+sd}{                P: optimal policy}
+        \PY{l+s+sd}{        \PYZdq{}\PYZdq{}\PYZdq{}}
+                \PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{N}\PY{p}{)}\PY{p}{:} 
+        \PY{c+c1}{\PYZsh{}             print \PYZdq{}Value Iteration,\PYZdq{}, \PYZus{}}
+                    \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{J}    \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Toperator}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{J}\PY{p}{)}
+                    \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{optP} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{optPolicy}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{J}\PY{p}{)}    
+        \PY{c+c1}{\PYZsh{}             print self.J, self.optP}
+                \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{J}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{optP}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}
+        
+            \PY{k}{def} \PY{n+nf}{GaussSeidelValueIteration}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{N} \PY{o}{=} \PY{l+m+mi}{1000}\PY{p}{)}\PY{p}{:}
+                \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{            Input Args:}
+        \PY{l+s+sd}{                N: number of iterations}
+        \PY{l+s+sd}{            returns:}
+        \PY{l+s+sd}{                J: optimal J}
+        \PY{l+s+sd}{                P: optimal policy}
+        \PY{l+s+sd}{        \PYZdq{}\PYZdq{}\PYZdq{}}
+                \PY{k}{for} \PY{n}{ii} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{N}\PY{p}{)}\PY{p}{:} 
+        \PY{c+c1}{\PYZsh{}             print \PYZdq{}Value Iteration,\PYZdq{}, \PYZus{}}
+        \PY{c+c1}{\PYZsh{}             state   = np.random.randint(3)}
+                    \PY{n}{state} \PY{o}{=} \PY{n}{ii} \PY{o}{\PYZpc{}} \PY{l+m+mi}{3}
+                    \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{J}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{p}{:}\PY{p}{,} \PY{n}{state}\PY{p}{]}  \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{p}{[}\PY{n}{state}\PY{p}{,} \PY{p}{:}\PY{p}{,} \PY{p}{:}\PY{p}{]}\PY{o}{*}\PYZbs{}
+                                                \PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g}\PY{p}{[}\PY{n}{state}\PY{p}{,} \PY{p}{:}\PY{p}{,} \PY{p}{:}\PY{p}{]} \PY{o}{+} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{alpha}\PY{o}{*}\PYZbs{}
+                                                 \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{J}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+                    \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{optP} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{optPolicy}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{J}\PY{p}{)}    
+        \PY{c+c1}{\PYZsh{}             print self.J, self.optP}
+                \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{J}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{optP}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}
+            
+            \PY{k}{def} \PY{n+nf}{PolicyIteration}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{N} \PY{o}{=} \PY{l+m+mi}{1000}\PY{p}{)}\PY{p}{:}
+                \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{            Input Args:}
+        \PY{l+s+sd}{                N: number of iterations}
+        \PY{l+s+sd}{            returns:}
+        \PY{l+s+sd}{                J: optimal J}
+        \PY{l+s+sd}{                P: optimal policy}
+        \PY{l+s+sd}{        \PYZdq{}\PYZdq{}\PYZdq{}}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Policy} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+                \PY{n}{temp} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+                \PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{N}\PY{p}{)}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{}             print \PYZdq{}Policy Iteration,\PYZdq{}, \PYZus{}}
+                    \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Jpi}  \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{PolicyEvaluation}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Policy}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Jpi}\PY{p}{,} \PY{n}{M}\PY{o}{=}\PY{n+nb+bp}{None}\PY{p}{)}
+                    \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Policy} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{PolicyUpdate}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Jpi}\PY{p}{)}
+        \PY{c+c1}{\PYZsh{}             print self.Jpi, self.Policy}
+                    \PY{k}{if} \PY{n}{temp}\PY{o}{.}\PY{n}{all}\PY{p}{(}\PY{p}{)} \PY{o}{==} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Policy}\PY{o}{.}\PY{n}{all}\PY{p}{(}\PY{p}{)}\PY{p}{:} \PY{k}{break}
+                    \PY{n}{temp} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Policy}
+                \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Jpi}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Policy}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}
+                    
+            \PY{k}{def} \PY{n+nf}{ModifiedPolicyIteration}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{N} \PY{o}{=} \PY{l+m+mi}{1000}\PY{p}{,} \PY{n}{M} \PY{o}{=} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{:}
+                \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{            Input Args:}
+        \PY{l+s+sd}{                N: number of iterations}
+        \PY{l+s+sd}{            returns:}
+        \PY{l+s+sd}{                J: optimal J}
+        \PY{l+s+sd}{                P: optimal policy}
+        \PY{l+s+sd}{        \PYZdq{}\PYZdq{}\PYZdq{}}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Policy} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)}
+                \PY{n}{temp} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+                \PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{N}\PY{p}{)}\PY{p}{:} 
+        \PY{c+c1}{\PYZsh{}             print \PYZdq{}Modified Policy Iteration,\PYZdq{}, \PYZus{}}
+                    \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Jpi}  \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{PolicyEvaluation}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Policy}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Jpi}\PY{p}{,} \PY{n}{M}\PY{p}{)}
+                    \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Policy} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{PolicyUpdate}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Jpi}\PY{p}{)}
+        \PY{c+c1}{\PYZsh{}             print self.Jpi, self.Policy}
+                    \PY{k}{if} \PY{n}{temp}\PY{o}{.}\PY{n}{all}\PY{p}{(}\PY{p}{)} \PY{o}{==} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Policy}\PY{o}{.}\PY{n}{all}\PY{p}{(}\PY{p}{)}\PY{p}{:} \PY{k}{break}
+                    \PY{n}{temp} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Policy}
+                \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Jpi}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Policy}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}
+            
+        
+            
+        \PY{n}{question1} \PY{o}{=} \PY{n}{Question1}\PY{p}{(}\PY{p}{)}
+        \PY{n}{vcost10\PYZus{}}\PY{p}{,} \PY{n}{vpolicy10\PYZus{}} \PY{o}{=} \PY{n}{question1}\PY{o}{.}\PY{n}{ValueIteration}\PY{p}{(}\PY{n}{N} \PY{o}{=} \PY{l+m+mi}{10}\PY{p}{)}
+        \PY{n}{pcost10\PYZus{}}\PY{p}{,} \PY{n}{ppolicy10\PYZus{}} \PY{o}{=} \PY{n}{question1}\PY{o}{.}\PY{n}{PolicyIteration}\PY{p}{(}\PY{n}{N} \PY{o}{=} \PY{l+m+mi}{10}\PY{p}{)}
+        \PY{n}{mpcost10\PYZus{}}\PY{p}{,} \PY{n}{mppolicy10\PYZus{}} \PY{o}{=} \PY{n}{question1}\PY{o}{.}\PY{n}{ModifiedPolicyIteration}\PY{p}{(}\PY{n}{N} \PY{o}{=} \PY{l+m+mi}{10}\PY{p}{)}
+        
+        
+        \PY{n}{question1} \PY{o}{=} \PY{n}{Question1}\PY{p}{(}\PY{p}{)}
+        \PY{n}{vcost20\PYZus{}}\PY{p}{,} \PY{n}{vpolicy20\PYZus{}} \PY{o}{=} \PY{n}{question1}\PY{o}{.}\PY{n}{ValueIteration}\PY{p}{(}\PY{n}{N} \PY{o}{=} \PY{l+m+mi}{20}\PY{p}{)}
+        \PY{n}{pcost20\PYZus{}}\PY{p}{,} \PY{n}{ppolicy20\PYZus{}} \PY{o}{=} \PY{n}{question1}\PY{o}{.}\PY{n}{PolicyIteration}\PY{p}{(}\PY{n}{N} \PY{o}{=} \PY{l+m+mi}{20}\PY{p}{)}
+        \PY{n}{mpcost20\PYZus{}}\PY{p}{,} \PY{n}{mppolicy20\PYZus{}} \PY{o}{=} \PY{n}{question1}\PY{o}{.}\PY{n}{ModifiedPolicyIteration}\PY{p}{(}\PY{n}{N} \PY{o}{=} \PY{l+m+mi}{20}\PY{p}{)}
+\end{Verbatim}
+
+
+    \subsubsection{Q1.a Optimal Cost and Optimal Policy with
+alpha}\label{q1.a-optimal-cost-and-optimal-policy-with-alpha}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}3}]:} \PY{n}{V}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alpha}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{p}{[}\PY{p}{]}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cost}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{[}\PY{p}{]}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{policy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{[}\PY{p}{]}\PY{p}{\PYZcb{}}
+        \PY{n}{P}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alpha}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{p}{[}\PY{p}{]}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cost}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{[}\PY{p}{]}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{policy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{[}\PY{p}{]}\PY{p}{\PYZcb{}}
+        \PY{n}{PM}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alpha}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{p}{[}\PY{p}{]}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cost}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{[}\PY{p}{]}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{policy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{[}\PY{p}{]}\PY{p}{\PYZcb{}}
+        
+        \PY{k}{for} \PY{n}{alpha} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{95}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{:}
+            \PY{n}{alpha} \PY{o}{=} \PY{n}{alpha}\PY{o}{*}\PY{l+m+mf}{1.0}\PY{o}{/}\PY{l+m+mf}{100.0}
+            
+            \PY{n}{question1} \PY{o}{=} \PY{n}{Question1}\PY{p}{(}\PY{n}{alpha}\PY{p}{)}
+            \PY{n}{vcost}\PY{p}{,} \PY{n}{vpolicy}   \PY{o}{=} \PY{n}{question1}\PY{o}{.}\PY{n}{ValueIteration}\PY{p}{(}\PY{n}{N} \PY{o}{=} \PY{l+m+mi}{10}\PY{p}{)}
+            \PY{n}{V}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alpha}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{alpha}\PY{p}{)}
+            \PY{n}{V}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cost}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{vcost}\PY{p}{)}
+            \PY{n}{V}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{policy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{vpolicy}\PY{p}{)}
+            \PY{k}{print} \PY{n}{alpha}\PY{p}{,} \PY{n}{vcost}\PY{p}{,} \PY{n}{vpolicy}\PY{o}{+}\PY{l+m+mi}{1}
+            
+        \PY{k}{print} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{=============================================}\PY{l+s+s2}{\PYZdq{}}  
+        \PY{k}{for} \PY{n}{alpha} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{95}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{:}
+            \PY{n}{alpha} \PY{o}{=} \PY{n}{alpha}\PY{o}{*}\PY{l+m+mf}{1.0}\PY{o}{/}\PY{l+m+mf}{100.0}
+            
+            \PY{n}{question1} \PY{o}{=} \PY{n}{Question1}\PY{p}{(}\PY{n}{alpha}\PY{p}{)}  
+            \PY{n}{pcost}\PY{p}{,} \PY{n}{ppolicy}   \PY{o}{=} \PY{n}{question1}\PY{o}{.}\PY{n}{PolicyIteration}\PY{p}{(}\PY{n}{N} \PY{o}{=} \PY{l+m+mi}{10}\PY{p}{)}
+            \PY{n}{P}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alpha}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{alpha}\PY{p}{)}
+            \PY{n}{P}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cost}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{vcost}\PY{p}{)}
+            \PY{n}{P}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{policy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{vpolicy}\PY{p}{)}
+            \PY{k}{print} \PY{n}{alpha}\PY{p}{,} \PY{n}{pcost}\PY{p}{,} \PY{n}{ppolicy}\PY{o}{+}\PY{l+m+mi}{1}
+            
+        \PY{k}{print} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{=============================================}\PY{l+s+s2}{\PYZdq{}}  
+        \PY{k}{for} \PY{n}{alpha} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{95}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{:}
+            \PY{n}{alpha} \PY{o}{=} \PY{n}{alpha}\PY{o}{*}\PY{l+m+mf}{1.0}\PY{o}{/}\PY{l+m+mf}{100.0}
+            
+            \PY{n}{question1} \PY{o}{=} \PY{n}{Question1}\PY{p}{(}\PY{n}{alpha}\PY{p}{)}
+            \PY{n}{mpcost}\PY{p}{,} \PY{n}{mppolicy} \PY{o}{=} \PY{n}{question1}\PY{o}{.}\PY{n}{ModifiedPolicyIteration}\PY{p}{(}\PY{n}{N} \PY{o}{=} \PY{l+m+mi}{10}\PY{p}{)}
+            \PY{n}{PM}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alpha}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{alpha}\PY{p}{)}
+            \PY{n}{PM}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cost}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{vcost}\PY{p}{)}
+            \PY{n}{PM}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{policy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{vpolicy}\PY{p}{)}
+            \PY{k}{print} \PY{n}{alpha}\PY{p}{,} \PY{n}{mpcost}\PY{p}{,} \PY{n}{mppolicy}\PY{o}{+}\PY{l+m+mi}{1}
+        
+        \PY{c+c1}{\PYZsh{}     print (list(V[\PYZsq{}alpha\PYZsq{}]), list(V[\PYZsq{}cost\PYZsq{}]), list(V[\PYZsq{}policy\PYZsq{}]))}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+0.0 [16.  15.   4.5] [2 2 3]
+0.05 [16.54406586 15.75739423  5.21856841] [2 2 3]
+0.1 [17.15806025 16.59699455  6.0031447 ] [2 2 3]
+0.15 [17.85400435 17.53295019  6.86605461] [2 2 3]
+0.2 [18.64696304 18.5828718   7.82267961] [2 2 3]
+0.25 [19.5560546  19.76895513  8.89247341] [2 2 3]
+0.3 [20.60586771 21.11954937 10.10038777] [2 2 3]
+0.35 [21.82845236 22.67135012 11.47887479] [2 2 3]
+0.4 [23.26610409 24.47245314 13.07068623] [2 2 3]
+0.45 [24.97522187 26.58657043 14.9327511 ] [2 2 3]
+0.5 [27.03158968 29.0987848  17.1414831 ] [2 2 3]
+0.55 [29.53750965 32.12330203 19.79994747] [2 2 3]
+0.6 [32.63130111 35.81375275 23.04740352] [2 2 3]
+0.65 [36.49977485 40.3766972  27.07183462] [2 2 3]
+0.7 [41.39439523 46.08909672 32.12618101] [2 2 3]
+0.75 [48.00909065 53.39881234 39.31162972] [2 2 2]
+0.8 [56.85939874 62.85820193 48.85803095] [2 2 2]
+0.85 [68.46551714 75.10641076 61.19796699] [2 2 2]
+0.9 [83.73221442 91.05107394 77.23948244] [2 2 2]
+=============================================
+0.0 [16.  15.   4.5] [2 2 3]
+0.05 [16.6533699  15.70265489  5.01239626] [2 2 3]
+0.1 [17.39080015 16.4765554   5.5770889 ] [2 2 3]
+0.15 [18.22751772 17.33313724  6.20405092] [2 2 3]
+0.2 [19.18272654 18.28645184  6.90582161] [2 2 3]
+0.25 [20.2809758  19.35396779  7.69838974] [2 2 3]
+0.3 [21.55413095 20.55768979  8.60246498] [2 2 3]
+0.35 [23.04427938 21.92575431  9.64535092] [2 2 3]
+0.4 [24.80812801 23.49476069 10.86377797] [2 2 3]
+0.45 [26.92386267 25.31327255 12.30831933] [2 2 3]
+0.5 [29.50222883 27.44725111 14.05052006] [2 2 3]
+0.55 [32.70518232 29.98881792 16.19488865] [2 2 3]
+0.6 [36.77885924 33.07105908 18.90008168] [2 2 3]
+0.65 [42.11543671 36.89450829 22.41862643] [2 2 3]
+0.7 [49.37813346 41.77806376 27.17713612] [2 2 3]
+0.75 [59.77901166 48.2665186  33.95446974] [2 2 3]
+0.8 [24.0060241  25.30120482 25.69277108] [2 2 1]
+0.85 [29.9924116  35.33161329 34.67597511] [2 2 1]
+0.9 [ 32.91175763 179.5816302   17.50661217] [1 2 2]
+=============================================
+0.0 [16.  15.   4.5] [2 2 3]
+0.05 [16.5440639  15.75739147  5.2185664 ] [2 2 3]
+0.1 [17.15799375 16.59690146  6.00307659] [2 2 3]
+0.15 [17.85346742 17.53220299  6.86550504] [2 2 3]
+0.2 [18.64454899 18.57953341  7.82021028] [2 2 3]
+0.25 [19.54816605 19.75811775  8.88440947] [2 2 3]
+0.3 [20.58477005 21.0907643  10.07883526] [2 2 3]
+0.35 [21.7792532  22.60470363 11.42864865] [2 2 3]
+0.4 [23.16221888 24.33276447 12.96470426] [2 2 3]
+0.45 [24.77172862 26.31500611 14.72529119] [2 2 3]
+0.5 [26.65567963 28.60095664 16.75850298] [2 2 3]
+0.55 [28.87500064 31.25263978 19.12542434] [2 2 3]
+0.6 [31.50789165 34.34860957 21.90435971] [2 2 3]
+0.65 [34.65537473 37.98925346 25.19637055] [2 2 3]
+0.7 [38.44846791 42.30366766 29.13243307] [2 2 3]
+0.75 [43.05734347 47.45845719 33.88257685] [2 2 3]
+0.8 [48.70288385 53.66886382 39.66741754] [2 2 2]
+0.85 [55.67110533 61.21268058 46.77255266] [2 2 2]
+0.9 [64.33097876 70.44746992 55.56634954] [2 2 2]
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}4}]:} \PY{n}{question1} \PY{o}{=} \PY{n}{Question1}\PY{p}{(}\PY{n}{alpha} \PY{o}{=} \PY{l+m+mf}{0.9}\PY{p}{)}
+        \PY{n}{mpcost}\PY{p}{,} \PY{n}{mppolicy} \PY{o}{=} \PY{n}{question1}\PY{o}{.}\PY{n}{ModifiedPolicyIteration}\PY{p}{(}\PY{n}{N} \PY{o}{=} \PY{l+m+mi}{10}\PY{p}{,} \PY{n}{M} \PY{o}{=} \PY{l+m+mi}{5}\PY{p}{)}
+        \PY{k}{print} \PY{n}{alpha}\PY{p}{,} \PY{n}{mpcost}\PY{p}{,} \PY{n}{mppolicy}\PY{o}{+}\PY{l+m+mi}{1}
+        \PY{k}{print} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{=============================================}\PY{l+s+s2}{\PYZdq{}}  
+        
+        \PY{n}{question1} \PY{o}{=} \PY{n}{Question1}\PY{p}{(}\PY{n}{alpha} \PY{o}{=} \PY{l+m+mf}{0.9}\PY{p}{)}
+        \PY{n}{mpcost}\PY{p}{,} \PY{n}{mppolicy} \PY{o}{=} \PY{n}{question1}\PY{o}{.}\PY{n}{ModifiedPolicyIteration}\PY{p}{(}\PY{n}{N} \PY{o}{=} \PY{l+m+mi}{10}\PY{p}{,} \PY{n}{M} \PY{o}{=} \PY{l+m+mi}{10}\PY{p}{)}
+        \PY{k}{print} \PY{n}{alpha}\PY{p}{,} \PY{n}{mpcost}\PY{p}{,} \PY{n}{mppolicy}\PY{o}{+}\PY{l+m+mi}{1}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+0.9 [64.33097876 70.44746992 55.56634954] [2 2 2]
+=============================================
+0.9 [ 91.91066062 101.63094332  83.3489995 ] [2 2 2]
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}5}]:} \PY{n}{question1} \PY{o}{=} \PY{n}{Question1}\PY{p}{(}\PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{)}
+        \PY{n}{vcost}\PY{p}{,} \PY{n}{vpolicy} \PY{o}{=} \PY{n}{question1}\PY{o}{.}\PY{n}{ValueIteration}\PY{p}{(}\PY{n}{N} \PY{o}{=} \PY{l+m+mi}{150}\PY{p}{)}
+        \PY{k}{print} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{============ Value Iteration ============}\PY{l+s+s2}{\PYZdq{}}
+        \PY{k}{print} \PY{n}{vcost}\PY{p}{,} \PY{n}{vpolicy}\PY{o}{+}\PY{l+m+mi}{1}
+        
+        
+        \PY{n}{question1} \PY{o}{=} \PY{n}{Question1}\PY{p}{(}\PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{)}
+        \PY{n}{gvcost}\PY{p}{,} \PY{n}{gvpolicy} \PY{o}{=} \PY{n}{question1}\PY{o}{.}\PY{n}{GaussSeidelValueIteration}\PY{p}{(}\PY{n}{N} \PY{o}{=} \PY{l+m+mi}{150}\PY{p}{)}
+        \PY{k}{print} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{============ Gauss SeidelValue Iteration ============}\PY{l+s+s2}{\PYZdq{}}
+        \PY{k}{print} \PY{n}{gvcost}\PY{p}{,} \PY{n}{gvpolicy}\PY{o}{+}\PY{l+m+mi}{1}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+============ Value Iteration ============
+[130.79243435 138.11318907 124.30186832] [2 2 2]
+============ Gauss SeidelValue Iteration ============
+[130.51816094 137.81893625 124.03704263] [2 2 2]
+
+    \end{Verbatim}
+
+    \section{Question 2}\label{question-2}
+
+\section{Action mapping}\label{action-mapping}
+
+\subsubsection{\texorpdfstring{0 = (\(\uparrow\), violet) up, 1 =
+(\(\rightarrow\), blue) right, 2 = (\(\downarrow\), green) down, 3 =
+(\(\leftarrow\), yellow)
+left}{0 = (\textbackslash{}uparrow, violet) up, 1 = (\textbackslash{}rightarrow, blue) right, 2 = (\textbackslash{}downarrow, green) down, 3 = (\textbackslash{}leftarrow, yellow) left}}\label{uparrow-violet-up-1-rightarrow-blue-right-2-downarrow-green-down-3-leftarrow-yellow-left}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}6}]:} \PY{n}{I} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+        \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}\PY{p}{:}
+            \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}\PY{p}{:}
+                \PY{n}{I}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{,} \PY{p}{:}\PY{p}{,} \PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{eye}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}
+        
+        \PY{n}{P} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{randn}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}
+        \PY{n}{J} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{randn}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}
+        
+        \PY{n}{P}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{J}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{)}\PY{o}{.}\PY{n}{shape}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}6}]:} (10, 10)
+\end{Verbatim}
+            
+    \subsubsection{Q2.a Value and policy iteration
+Implementation}\label{q2.a-value-and-policy-iteration-implementation}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}7}]:} \PY{k}{class} \PY{n+nc}{Question2}\PY{p}{(}\PY{n+nb}{object}\PY{p}{)}\PY{p}{:}
+            \PY{k}{def} \PY{n+nf+fm}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{variant} \PY{o}{=} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+                \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{            variant: variant of grid world}
+        \PY{l+s+sd}{            variant = 1 (terminal state at (3, 0))}
+        \PY{l+s+sd}{            variant = 2 (terminal state at (9, 9))}
+        \PY{l+s+sd}{        \PYZdq{}\PYZdq{}\PYZdq{}}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{variant} \PY{o}{=} \PY{n}{variant}
+                \PY{c+c1}{\PYZsh{} init Probabilities}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{J} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Jpi} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+                \PY{c+c1}{\PYZsh{} init all rewards with 0}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}    
+                \PY{c+c1}{\PYZsh{} wormhole locations}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{wormholeIN} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}
+                            \PY{p}{[}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{]}\PY{p}{,}
+                            \PY{p}{[}\PY{p}{(}\PY{l+m+mi}{7}\PY{p}{,}\PY{l+m+mi}{9}\PY{p}{)}\PY{p}{]}
+                            \PY{p}{]}\PY{p}{)}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{wormholeOUT} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}
+                            \PY{p}{[}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{]}\PY{p}{,}
+                            \PY{p}{[}\PY{p}{(}\PY{l+m+mi}{7}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{]}
+                            \PY{p}{]}\PY{p}{)}
+                \PY{c+c1}{\PYZsh{} generate Probabilities}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{generateP}\PY{p}{(}\PY{p}{)}
+                \PY{c+c1}{\PYZsh{} generate Rewards}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{generateR}\PY{p}{(}\PY{p}{)}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{alpha} \PY{o}{=} \PY{l+m+mf}{0.95}
+                
+            \PY{k}{def} \PY{n+nf}{generateP}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+                \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{            Generates and returns P matrix }
+        \PY{l+s+sd}{            5th order Tensor}
+        \PY{l+s+sd}{        \PYZdq{}\PYZdq{}\PYZdq{}}
+                \PY{k}{for} \PY{n}{ix} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+                    \PY{k}{for} \PY{n}{iy} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+                        \PY{k}{for} \PY{n}{action} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+                            \PY{n}{temp} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+                            \PY{k}{if} \PY{n}{action} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:} 
+                                \PY{n}{temp}\PY{p}{[}\PY{n}{ix}\PY{p}{,} \PY{n+nb}{min}\PY{p}{(}\PY{n}{iy} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{)}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{0.8} 
+                                \PY{n}{temp}\PY{p}{[}\PY{n}{ix}\PY{p}{,} \PY{n+nb}{max}\PY{p}{(}\PY{n}{iy} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{0.2}\PY{o}{/}\PY{l+m+mf}{3.0}
+                                \PY{n}{temp}\PY{p}{[}\PY{n+nb}{max}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{ix} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{iy}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{0.2}\PY{o}{/}\PY{l+m+mf}{3.0} 
+                                \PY{n}{temp}\PY{p}{[}\PY{n+nb}{min}\PY{p}{(}\PY{n}{ix} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{)}\PY{p}{,} \PY{n}{iy}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{0.2}\PY{o}{/}\PY{l+m+mf}{3.0}
+                            \PY{k}{elif} \PY{n}{action} \PY{o}{==} \PY{l+m+mi}{1}\PY{p}{:}
+                                \PY{n}{temp}\PY{p}{[}\PY{n}{ix}\PY{p}{,} \PY{n+nb}{min}\PY{p}{(}\PY{n}{iy} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{)}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{0.2}\PY{o}{/}\PY{l+m+mf}{3.} 
+                                \PY{n}{temp}\PY{p}{[}\PY{n}{ix}\PY{p}{,} \PY{n+nb}{max}\PY{p}{(}\PY{n}{iy} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{0.2}\PY{o}{/}\PY{l+m+mf}{3.} 
+                                \PY{n}{temp}\PY{p}{[}\PY{n+nb}{max}\PY{p}{(}\PY{n}{ix} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{,} \PY{n}{iy}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{0.2}\PY{o}{/}\PY{l+m+mf}{3.} 
+                                \PY{n}{temp}\PY{p}{[}\PY{n+nb}{min}\PY{p}{(}\PY{n}{ix} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{)}\PY{p}{,} \PY{n}{iy}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{0.8} 
+                            \PY{k}{elif} \PY{n}{action} \PY{o}{==} \PY{l+m+mi}{2}\PY{p}{:}
+                                \PY{n}{temp}\PY{p}{[}\PY{n}{ix}\PY{p}{,} \PY{n+nb}{max}\PY{p}{(}\PY{n}{iy} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{0.8}
+                                \PY{n}{temp}\PY{p}{[}\PY{n}{ix}\PY{p}{,} \PY{n+nb}{min}\PY{p}{(}\PY{n}{iy} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{)}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{0.2}\PY{o}{/}\PY{l+m+mf}{3.}
+                                \PY{n}{temp}\PY{p}{[}\PY{n+nb}{min}\PY{p}{(}\PY{n}{ix} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{)}\PY{p}{,} \PY{n}{iy}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{0.2}\PY{o}{/}\PY{l+m+mf}{3.}
+                                \PY{n}{temp}\PY{p}{[}\PY{n+nb}{max}\PY{p}{(}\PY{n}{ix} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{,} \PY{n}{iy}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{0.2}\PY{o}{/}\PY{l+m+mf}{3.}
+                            \PY{k}{else}\PY{p}{:}
+                                \PY{n}{temp}\PY{p}{[}\PY{n+nb}{max}\PY{p}{(}\PY{n}{ix} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{,} \PY{n}{iy}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{0.8}
+                                \PY{n}{temp}\PY{p}{[}\PY{n+nb}{min}\PY{p}{(}\PY{n}{ix} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{)}\PY{p}{,} \PY{n}{iy}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{0.2}\PY{o}{/}\PY{l+m+mf}{3.}
+                                \PY{n}{temp}\PY{p}{[}\PY{n}{ix}\PY{p}{,} \PY{n+nb}{min}\PY{p}{(}\PY{n}{iy} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{)}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{0.2}\PY{o}{/}\PY{l+m+mf}{3.}
+                                \PY{n}{temp}\PY{p}{[}\PY{n}{ix}\PY{p}{,} \PY{n+nb}{max}\PY{p}{(}\PY{n}{iy} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{0.2}\PY{o}{/}\PY{l+m+mf}{3.}
+                            
+                            \PY{k}{if} \PY{p}{(}\PY{n}{ix}\PY{p}{,} \PY{n}{iy}\PY{p}{)} \PY{o}{==} \PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{:}
+                                \PY{n}{temp} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+                                \PY{n}{temp}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{]} \PY{o}{=} \PY{n}{temp}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{]} \PY{o}{=} \PY{n}{temp}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{]} \PY{o}{=} \PY{n}{temp}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{1}\PY{o}{/}\PY{l+m+mf}{4.0}
+                            
+                            \PY{k}{if} \PY{p}{(}\PY{n}{ix}\PY{p}{,} \PY{n}{iy}\PY{p}{)} \PY{o}{==} \PY{p}{(}\PY{l+m+mi}{7}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{)}\PY{p}{:}
+                                \PY{n}{temp} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+                                \PY{n}{temp}\PY{p}{[}\PY{l+m+mi}{7}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{1.0}
+                                
+        \PY{c+c1}{\PYZsh{}                     for wi in range(len(self.wormholeIN)):}
+        \PY{c+c1}{\PYZsh{}                         if (ix, iy) in self.wormholeIN[wi]:}
+        \PY{c+c1}{\PYZsh{}                             temp = np.zeros((10, 10))}
+        \PY{c+c1}{\PYZsh{}                             for o in self.wormholeOUT[wi]:}
+        \PY{c+c1}{\PYZsh{}                                 temp[o[0], o[1]] = 1.0/len(self.wormholeOUT[wi])}
+                            
+                            \PY{k}{if} \PY{p}{(}\PY{p}{(}\PY{n}{ix}\PY{p}{,} \PY{n}{iy}\PY{p}{)} \PY{o}{==} \PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)} \PY{o+ow}{and} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{variant} \PY{o}{==} \PY{l+m+mi}{1}\PY{p}{)} \PYZbs{}
+                               \PY{o+ow}{or} \PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{variant} \PY{o}{==} \PY{l+m+mi}{2} \PY{o+ow}{and} \PY{p}{(}\PY{n}{ix}\PY{p}{,} \PY{n}{iy}\PY{p}{)} \PY{o}{==} \PY{p}{(}\PY{l+m+mi}{9}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+                                \PY{n}{temp} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+        
+                            \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{p}{[}\PY{n}{ix}\PY{p}{,} \PY{n}{iy}\PY{p}{,} \PY{n}{action}\PY{p}{,} \PY{p}{:}\PY{p}{,} \PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n}{temp}
+                \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}
+            
+            \PY{k}{def} \PY{n+nf}{generateR}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+                \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{            Generates and returns R matrix }
+        \PY{l+s+sd}{            5th order Tensor}
+        \PY{l+s+sd}{        \PYZdq{}\PYZdq{}\PYZdq{}}
+                \PY{k}{for} \PY{n}{ix} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+                    \PY{k}{for} \PY{n}{iy} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+                        \PY{k}{for} \PY{n}{action} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+                            \PY{k}{if} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{variant} \PY{o}{==} \PY{l+m+mi}{2} \PY{o+ow}{and} \PYZbs{}
+                            \PY{p}{(}\PY{p}{(}\PY{n}{ix}\PY{p}{,} \PY{n}{iy}\PY{p}{,} \PY{n}{action}\PY{p}{)} \PY{o}{==} \PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)} \PY{o+ow}{or} \PYZbs{}
+                                \PY{p}{(}\PY{n}{ix}\PY{p}{,} \PY{n}{iy}\PY{p}{,} \PY{n}{action}\PY{p}{)} \PY{o}{==} \PY{p}{(}\PY{l+m+mi}{9}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+                                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g}\PY{p}{[}\PY{n}{ix}\PY{p}{,} \PY{n}{iy}\PY{p}{,} \PY{n}{action}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{10}
+                                
+                            \PY{k}{if} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{variant} \PY{o}{==} \PY{l+m+mi}{1} \PY{o+ow}{and} \PYZbs{}
+                             \PY{p}{(}\PY{p}{(}\PY{n}{ix}\PY{p}{,} \PY{n}{iy}\PY{p}{,} \PY{n}{action}\PY{p}{)} \PY{o}{==} \PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)} \PY{o+ow}{or} \PYZbs{}
+                                \PY{p}{(}\PY{n}{ix}\PY{p}{,} \PY{n}{iy}\PY{p}{,} \PY{n}{action}\PY{p}{)} \PY{o}{==} \PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PYZbs{}
+                                \PY{o+ow}{or}\PY{p}{(}\PY{n}{ix}\PY{p}{,} \PY{n}{iy}\PY{p}{,} \PY{n}{action}\PY{p}{)} \PY{o}{==} \PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+                                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g}\PY{p}{[}\PY{n}{ix}\PY{p}{,} \PY{n}{iy}\PY{p}{,} \PY{n}{action}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{10}
+                \PY{k}{return} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g}
+                                
+            \PY{k}{def} \PY{n+nf}{Toperator}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{J}\PY{p}{)}\PY{p}{:}
+                \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{            Applies T operator for current J}
+        \PY{l+s+sd}{        \PYZdq{}\PYZdq{}\PYZdq{}}
+                \PY{n}{J} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{*}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g} \PY{o}{+} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{alpha}\PY{o}{*}\PY{n}{J}\PY{p}{)}\PY{p}{,}\PYZbs{}
+                                    \PY{n}{axis}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}
+                \PY{k}{return} \PY{n}{J}
+            
+            \PY{k}{def} \PY{n+nf}{optPolicy}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{J}\PY{p}{)}\PY{p}{:}
+                \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{            Finds optimal policy for current states}
+        \PY{l+s+sd}{        \PYZdq{}\PYZdq{}\PYZdq{}}
+                \PY{n}{optP} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{*}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g} \PY{o}{+} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{alpha}\PY{o}{*}\PY{n}{J}\PY{p}{)}\PY{p}{,}\PYZbs{}
+                                    \PY{n}{axis}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}
+                \PY{k}{return} \PY{n}{optP}
+            
+            \PY{k}{def} \PY{n+nf}{Tpioperator}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{Policy}\PY{p}{,} \PY{n}{Jpi}\PY{p}{)}\PY{p}{:}
+                \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{            Applies Tpi operator for current Jpi}
+        \PY{l+s+sd}{        \PYZdq{}\PYZdq{}\PYZdq{}}
+                \PY{n}{P} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}\PYZbs{}
+                             \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+                \PY{n}{G} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}\PYZbs{}
+                             \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+                
+                \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{Policy}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+                    \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{Policy}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+                        \PY{n}{P}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{,} \PY{p}{:}\PY{p}{,} \PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{j}\PY{p}{,} \PY{n}{Policy}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{p}{:}\PY{p}{,} \PY{p}{:}\PY{p}{]}
+                        \PY{n}{G}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{,} \PY{p}{:}\PY{p}{,} \PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{j}\PY{p}{,} \PY{n}{Policy}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{p}{:}\PY{p}{,} \PY{p}{:}\PY{p}{]}
+                        
+                \PY{n}{P} \PY{o}{=} \PY{n}{P}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{100}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{)}
+                \PY{n}{G} \PY{o}{=} \PY{n}{G}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{100}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{)}
+                \PY{n}{Jpi} \PY{o}{=} \PY{n}{Jpi}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{100}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+                
+                \PY{n}{Jpi} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{P}\PY{o}{*}\PY{n}{G}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{n+nb+bp}{None}\PY{p}{]} \PY{o}{+} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{alpha}\PY{o}{*}\PY{n}{P}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{Jpi}\PY{p}{)}
+                \PY{n}{Jpi} \PY{o}{=} \PY{n}{Jpi}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}
+                \PY{k}{return} \PY{n}{Jpi}
+            
+            \PY{k}{def} \PY{n+nf}{PolicyEvaluation}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{Policy}\PY{p}{,} \PY{n}{J}\PY{p}{,} \PY{n}{M} \PY{o}{=} \PY{l+m+mi}{1000}\PY{p}{)}\PY{p}{:}
+                \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{            Policy evaluation function}
+        \PY{l+s+sd}{        \PYZdq{}\PYZdq{}\PYZdq{}}
+                \PY{k}{if} \PY{n}{M}\PY{p}{:}
+                    \PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{M}\PY{p}{)}\PY{p}{:}
+                        \PY{n}{J} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Tpioperator}\PY{p}{(}\PY{n}{Policy}\PY{p}{,} \PY{n}{J}\PY{p}{)}
+                \PY{k}{else}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{}             I = np.zeros((self.P.shape[0], self.P.shape[0],\PYZbs{}}
+        \PY{c+c1}{\PYZsh{}                           self.P.shape[0], self.P.shape[0]))}
+        \PY{c+c1}{\PYZsh{}             for i in range(self.P.shape[0]):}
+        \PY{c+c1}{\PYZsh{}                 for j in range(self.P.shape[0]):}
+        \PY{c+c1}{\PYZsh{}                     I[i,j, :, :] = np.eye(self.P.shape[0])}
+        
+                    \PY{n}{I} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{eye}\PY{p}{(}\PY{l+m+mi}{100}\PY{p}{)}
+                    \PY{n}{P} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}\PYZbs{}
+                                  \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+                    \PY{n}{G} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}\PYZbs{}
+                                  \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+                    
+                    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{Policy}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+                        \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{Policy}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+                            \PY{n}{P}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{,} \PY{p}{:}\PY{p}{,} \PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{P}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{,} \PY{n}{Policy}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{p}{:}\PY{p}{,} \PY{p}{:}\PY{p}{]}
+                            \PY{n}{G}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{,} \PY{p}{:}\PY{p}{,} \PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{g}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{,} \PY{n}{Policy}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{p}{:}\PY{p}{,} \PY{p}{:}\PY{p}{]}
+                    
+                    \PY{n}{P} \PY{o}{=} \PY{n}{P}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{100}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{)}
+                    \PY{n}{G} \PY{o}{=} \PY{n}{G}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{100}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{)}
+                    
+                    \PY{n}{J} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{P}\PY{o}{*}\PY{n}{G}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{[}\PY{n+nb+bp}{None}\PY{p}{,} \PY{p}{:}\PY{p}{]}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{inv}\PY{p}{(}\PY{n}{I} \PY{o}{\PYZhy{}} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{alpha}\PY{o}{*}\PY{n}{P}\PY{p}{)}\PY{p}{)}
+        \PY{c+c1}{\PYZsh{}             J = np.sum(P*G, axis = (2,3)).dot(np.linalg.inv(I \PYZhy{} self.alpha*P).sum((2,3)))}
+        \PY{c+c1}{\PYZsh{}             print J.shape}
+                    \PY{n}{J} \PY{o}{=} \PY{n}{J}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{)}
+                \PY{k}{return} \PY{n}{J}
+            
+            \PY{k}{def} \PY{n+nf}{PolicyUpdate}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{Jpi}\PY{p}{)}\PY{p}{:}
+                \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{            Tpi\PYZus{}new Jpi = TJpi finds new policy}
+        \PY{l+s+sd}{        \PYZdq{}\PYZdq{}\PYZdq{}}
+                \PY{n}{Policy} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{optPolicy}\PY{p}{(}\PY{n}{Jpi}\PY{p}{)}
+                \PY{k}{return} \PY{n}{Policy}
+            
+            \PY{k}{def} \PY{n+nf}{ValueIteration}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{N} \PY{o}{=} \PY{l+m+mi}{1000}\PY{p}{)}\PY{p}{:}
+                \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{            Input Args:}
+        \PY{l+s+sd}{                N: number of iterations}
+        \PY{l+s+sd}{            returns:}
+        \PY{l+s+sd}{                J: optimal J}
+        \PY{l+s+sd}{                P: optimal policy}
+        \PY{l+s+sd}{        \PYZdq{}\PYZdq{}\PYZdq{}}
+                \PY{n}{cost\PYZus{}hist}\PY{p}{,} \PY{n}{policy\PYZus{}hist} \PY{o}{=} \PY{p}{[}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{p}{]}
+                \PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{N}\PY{p}{)}\PY{p}{:} 
+                    \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{J} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Toperator}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{J}\PY{p}{)}
+                    \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{optP} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{optPolicy}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{J}\PY{p}{)}
+        \PY{c+c1}{\PYZsh{}             print \PYZdq{}Value Iteration\PYZdq{}, \PYZus{}}
+        \PY{c+c1}{\PYZsh{}             print self.optP}
+                    \PY{n}{cost\PYZus{}hist}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{rot90}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{J}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+                    \PY{n}{policy\PYZus{}hist}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{rot90}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{optP}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+                \PY{k}{return} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{J}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{optP}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{n}{cost\PYZus{}hist}\PY{p}{,} \PY{n}{policy\PYZus{}hist}  
+            
+            \PY{k}{def} \PY{n+nf}{PolicyIteration}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{N} \PY{o}{=} \PY{l+m+mi}{1000}\PY{p}{,} \PY{n}{M} \PY{o}{=} \PY{l+m+mi}{100}\PY{p}{)}\PY{p}{:}
+                \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{l+s+sd}{            Input Args:}
+        \PY{l+s+sd}{                N: number of iterations}
+        \PY{l+s+sd}{            returns:}
+        \PY{l+s+sd}{                J: optimal J}
+        \PY{l+s+sd}{                P: optimal policy}
+        \PY{l+s+sd}{        \PYZdq{}\PYZdq{}\PYZdq{}}
+                \PY{n}{cost\PYZus{}hist}\PY{p}{,} \PY{n}{policy\PYZus{}hist} \PY{o}{=} \PY{p}{[}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{p}{]}
+                
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Policy} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{int32}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+                \PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{N}\PY{p}{)}\PY{p}{:} 
+                    \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Jpi}  \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{PolicyEvaluation}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Policy}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Jpi}\PY{p}{,} \PY{n}{M}\PY{p}{)}
+                    \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Policy} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{PolicyUpdate}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Jpi}\PY{p}{)}
+        \PY{c+c1}{\PYZsh{}             print \PYZdq{}Policy Iteration\PYZdq{}, \PYZus{}}
+        \PY{c+c1}{\PYZsh{}             print self.Policy}
+                    \PY{n}{cost\PYZus{}hist}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{rot90}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Jpi}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+                    \PY{n}{policy\PYZus{}hist}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{rot90}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Policy}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+                    
+                \PY{k}{return} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Jpi}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{Policy}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{n}{cost\PYZus{}hist}\PY{p}{,} \PY{n}{policy\PYZus{}hist}
+\end{Verbatim}
+
+
+    \subsubsection{Q2.b}\label{q2.b}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}44}]:} \PY{k+kn}{from} \PY{n+nn}{unicodedata} \PY{k+kn}{import} \PY{o}{*}
+         \PY{k}{def} \PY{n+nf}{print\PYZus{}policy}\PY{p}{(}\PY{n}{pi}\PY{p}{,} \PY{n}{variant} \PY{o}{=} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{:}
+             \PY{n}{pi} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{pi}\PY{p}{)}
+             \PY{n}{pi}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{=}\PY{l+m+mi}{4}
+             \PY{n}{pi}\PY{p}{[}\PY{l+m+mi}{7}\PY{p}{,}\PY{l+m+mi}{9}\PY{p}{]}\PY{o}{=}\PY{l+m+mi}{4}
+             
+             \PY{k}{if} \PY{n}{variant} \PY{o}{==} \PY{l+m+mi}{1}\PY{p}{:}
+                 \PY{n}{pi}\PY{p}{[}\PY{l+m+mi}{9}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{5}
+             \PY{k}{else}\PY{p}{:}
+                 \PY{n}{pi}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{5}
+         
+             \PY{n}{plot} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{empty}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{)}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{str}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+                 
+             \PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}
+             \PY{n}{plot}\PY{p}{[}\PY{n}{np}\PY{o}{.}\PY{n}{where}\PY{p}{(}\PY{n}{pi} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{]} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZca{}}\PY{l+s+s1}{\PYZsq{}}
+             \PY{n}{plot}\PY{p}{[}\PY{n}{np}\PY{o}{.}\PY{n}{where}\PY{p}{(}\PY{n}{pi} \PY{o}{==} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{]} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZgt{}}\PY{l+s+s1}{\PYZsq{}}
+             \PY{n}{plot}\PY{p}{[}\PY{n}{np}\PY{o}{.}\PY{n}{where}\PY{p}{(}\PY{n}{pi} \PY{o}{==} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{]} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{v}\PY{l+s+s1}{\PYZsq{}}
+             \PY{n}{plot}\PY{p}{[}\PY{n}{np}\PY{o}{.}\PY{n}{where}\PY{p}{(}\PY{n}{pi} \PY{o}{==} \PY{l+m+mi}{3}\PY{p}{)}\PY{p}{]} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZlt{}}\PY{l+s+s1}{\PYZsq{}}
+             \PY{n}{plot}\PY{p}{[}\PY{n}{np}\PY{o}{.}\PY{n}{where}\PY{p}{(}\PY{n}{pi} \PY{o}{==} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{]} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{W}\PY{l+s+s1}{\PYZsq{}}
+             \PY{n}{plot}\PY{p}{[}\PY{n}{np}\PY{o}{.}\PY{n}{where}\PY{p}{(}\PY{n}{pi} \PY{o}{==} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{]} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{T}\PY{l+s+s1}{\PYZsq{}}
+         
+             \PY{k}{print} \PY{n}{np}\PY{o}{.}\PY{n}{rot90}\PY{p}{(}\PY{n}{plot}\PY{p}{)}
+                     
+             \PY{k}{print} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}45}]:} \PY{k}{print} \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{======================= Variant 1 ============================}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{question2} \PY{o}{=} \PY{n}{Question2}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}
+         \PY{n}{j}\PY{p}{,} \PY{n}{p}\PY{p}{,} \PY{n}{Chist}\PY{p}{,} \PY{n}{Phist} \PY{o}{=} \PY{n}{question2}\PY{o}{.}\PY{n}{PolicyIteration}\PY{p}{(}\PY{n}{N}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{)}
+         
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{rot90}\PY{p}{(}\PY{n}{j}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{colorbar}\PY{p}{(}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Variant 1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{J after 10 iterations}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{rot90}\PY{p}{(}\PY{n}{p}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{colorbar}\PY{p}{(}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Variant 1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Policy after 10 iterations}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+         \PY{k}{print} \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Policy =\PYZgt{} 0: up, 1: right, 2: down, 3: left}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{k}{print} \PY{n}{np}\PY{o}{.}\PY{n}{rot90}\PY{p}{(}\PY{n}{p}\PY{p}{)}
+         \PY{n}{print\PYZus{}policy}\PY{p}{(}\PY{n}{p}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+         
+         \PY{k}{print} \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{===================================================}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         
+         \PY{n}{question2} \PY{o}{=} \PY{n}{Question2}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}
+         \PY{n}{j}\PY{p}{,} \PY{n}{p}\PY{p}{,} \PY{n}{Chist}\PY{p}{,} \PY{n}{Phist} \PY{o}{=} \PY{n}{question2}\PY{o}{.}\PY{n}{ValueIteration}\PY{p}{(}\PY{n}{N}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{)}
+         
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{rot90}\PY{p}{(}\PY{n}{j}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{colorbar}\PY{p}{(}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Variant 1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{J after 10 iterations}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{rot90}\PY{p}{(}\PY{n}{p}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{colorbar}\PY{p}{(}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Variant 1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Policy after 10 iterations}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+         \PY{k}{print} \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Policy =\PYZgt{} 0: up, 1: right, 2: down, 3: left}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{k}{print} \PY{n}{np}\PY{o}{.}\PY{n}{rot90}\PY{p}{(}\PY{n}{p}\PY{p}{)}
+         \PY{n}{print\PYZus{}policy}\PY{p}{(}\PY{n}{p}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+         
+         \PY{k}{print} \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{======================= Variant 2 ============================}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         
+         \PY{n}{question2} \PY{o}{=} \PY{n}{Question2}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+         \PY{n}{j}\PY{p}{,} \PY{n}{p}\PY{p}{,} \PY{n}{Chist}\PY{p}{,} \PY{n}{Phist} \PY{o}{=} \PY{n}{question2}\PY{o}{.}\PY{n}{PolicyIteration}\PY{p}{(}\PY{n}{N}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{)}
+         
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{rot90}\PY{p}{(}\PY{n}{j}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{colorbar}\PY{p}{(}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Variant 2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{J after 10 iterations}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{rot90}\PY{p}{(}\PY{n}{p}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{colorbar}\PY{p}{(}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Variant 2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Policy after 10 iterations}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+         \PY{k}{print} \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Policy =\PYZgt{} 0: up, 1: right, 2: down, 3: left}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{k}{print} \PY{n}{np}\PY{o}{.}\PY{n}{rot90}\PY{p}{(}\PY{n}{p}\PY{p}{)}
+         \PY{n}{print\PYZus{}policy}\PY{p}{(}\PY{n}{p}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
+         
+         \PY{k}{print} \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{===================================================}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         
+         \PY{n}{question2} \PY{o}{=} \PY{n}{Question2}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+         \PY{n}{j}\PY{p}{,} \PY{n}{p}\PY{p}{,} \PY{n}{Chist}\PY{p}{,} \PY{n}{Phist} \PY{o}{=} \PY{n}{question2}\PY{o}{.}\PY{n}{ValueIteration}\PY{p}{(}\PY{n}{N}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{)}
+         
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{rot90}\PY{p}{(}\PY{n}{j}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{colorbar}\PY{p}{(}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Variant 2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{J after 10 iterations}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{rot90}\PY{p}{(}\PY{n}{p}\PY{p}{)}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{colorbar}\PY{p}{(}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Variant 2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Policy after 10 iterations}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+         \PY{k}{print} \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Policy =\PYZgt{} 0: up, 1: right, 2: down, 3: left}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{k}{print} \PY{n}{np}\PY{o}{.}\PY{n}{rot90}\PY{p}{(}\PY{n}{p}\PY{p}{)}
+         \PY{n}{print\PYZus{}policy}\PY{p}{(}\PY{n}{p}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+======================= Variant 1 ============================
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_14_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Policy => 0: up, 1: right, 2: down, 3: left
+[[1 1 1 1 1 2 2 0 1 0]
+ [1 1 1 1 1 1 1 1 1 0]
+ [1 1 1 1 1 1 1 1 0 0]
+ [1 1 1 1 1 1 1 1 0 0]
+ [0 1 1 1 1 1 1 0 0 0]
+ [0 1 1 1 1 1 0 0 0 0]
+ [0 0 1 1 1 0 0 0 0 0]
+ [2 0 1 1 1 0 0 0 0 0]
+ [2 2 1 1 1 1 0 0 0 0]
+ [0 3 3 1 1 1 1 0 0 0]]
+--------------------------------
+[['>' '>' '>' '>' '>' 'v' 'v' 'W' '>' 'T']
+ ['>' '>' '>' '>' '>' '>' '>' '>' '>' '\^{}']
+ ['>' '>' '>' '>' '>' '>' '>' '>' '\^{}' '\^{}']
+ ['>' '>' '>' '>' '>' '>' '>' '>' '\^{}' '\^{}']
+ ['\^{}' '>' '>' '>' '>' '>' '>' '\^{}' '\^{}' '\^{}']
+ ['\^{}' '>' '>' '>' '>' '>' '\^{}' '\^{}' '\^{}' '\^{}']
+ ['\^{}' '\^{}' '>' '>' '>' '\^{}' '\^{}' '\^{}' '\^{}' '\^{}']
+ ['v' '\^{}' '>' '>' '>' '\^{}' '\^{}' '\^{}' '\^{}' '\^{}']
+ ['v' 'v' '>' '>' '>' '>' '\^{}' '\^{}' '\^{}' '\^{}']
+ ['W' '<' '<' '>' '>' '>' '>' '\^{}' '\^{}' '\^{}']]
+--------------------------------
+===================================================
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_14_3.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Policy => 0: up, 1: right, 2: down, 3: left
+[[1 1 1 1 1 2 2 0 1 0]
+ [1 1 1 1 1 1 1 1 1 0]
+ [1 1 1 1 1 1 1 1 0 0]
+ [1 1 1 1 1 1 1 1 0 0]
+ [0 1 1 1 1 1 1 0 0 0]
+ [0 1 1 1 1 1 0 0 0 0]
+ [0 0 1 1 1 0 0 0 0 0]
+ [2 0 1 1 1 0 0 0 0 0]
+ [2 2 1 1 1 1 0 0 0 0]
+ [0 3 3 1 1 1 1 0 0 0]]
+--------------------------------
+[['>' '>' '>' '>' '>' 'v' 'v' 'W' '>' 'T']
+ ['>' '>' '>' '>' '>' '>' '>' '>' '>' '\^{}']
+ ['>' '>' '>' '>' '>' '>' '>' '>' '\^{}' '\^{}']
+ ['>' '>' '>' '>' '>' '>' '>' '>' '\^{}' '\^{}']
+ ['\^{}' '>' '>' '>' '>' '>' '>' '\^{}' '\^{}' '\^{}']
+ ['\^{}' '>' '>' '>' '>' '>' '\^{}' '\^{}' '\^{}' '\^{}']
+ ['\^{}' '\^{}' '>' '>' '>' '\^{}' '\^{}' '\^{}' '\^{}' '\^{}']
+ ['v' '\^{}' '>' '>' '>' '\^{}' '\^{}' '\^{}' '\^{}' '\^{}']
+ ['v' 'v' '>' '>' '>' '>' '\^{}' '\^{}' '\^{}' '\^{}']
+ ['W' '<' '<' '>' '>' '>' '>' '\^{}' '\^{}' '\^{}']]
+--------------------------------
+======================= Variant 2 ============================
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_14_5.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Policy => 0: up, 1: right, 2: down, 3: left
+[[2 2 2 2 1 1 1 0 3 3]
+ [2 2 2 2 2 1 0 0 0 3]
+ [2 2 2 2 2 2 0 0 0 3]
+ [2 2 2 2 2 2 2 0 0 0]
+ [2 2 2 2 2 2 2 3 3 2]
+ [2 2 2 2 2 2 2 2 2 2]
+ [2 2 2 2 2 2 2 3 3 2]
+ [1 1 2 2 2 2 3 3 3 3]
+ [1 1 2 2 2 3 3 3 3 3]
+ [0 1 1 0 3 3 3 3 3 3]]
+--------------------------------
+[['v' 'v' 'v' 'v' '>' '>' '>' 'W' '<' '<']
+ ['v' 'v' 'v' 'v' 'v' '>' '\^{}' '\^{}' '\^{}' '<']
+ ['v' 'v' 'v' 'v' 'v' 'v' '\^{}' '\^{}' '\^{}' '<']
+ ['v' 'v' 'v' 'v' 'v' 'v' 'v' '\^{}' '\^{}' '\^{}']
+ ['v' 'v' 'v' 'v' 'v' 'v' 'v' '<' '<' 'v']
+ ['v' 'v' 'v' 'v' 'v' 'v' 'v' 'v' 'v' 'v']
+ ['v' 'v' 'v' 'v' 'v' 'v' 'v' '<' '<' 'v']
+ ['>' '>' 'v' 'v' 'v' 'v' '<' '<' '<' '<']
+ ['>' '>' 'v' 'v' 'v' '<' '<' '<' '<' '<']
+ ['W' '>' '>' 'T' '<' '<' '<' '<' '<' '<']]
+--------------------------------
+===================================================
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_14_7.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Policy => 0: up, 1: right, 2: down, 3: left
+[[2 2 2 2 1 1 1 0 3 3]
+ [2 2 2 2 2 1 0 0 0 3]
+ [2 2 2 2 2 2 0 0 0 3]
+ [2 2 2 2 2 2 2 0 0 0]
+ [2 2 2 2 2 2 2 3 3 2]
+ [2 2 2 2 2 2 2 2 2 2]
+ [2 2 2 2 2 2 2 3 3 2]
+ [1 1 2 2 2 2 3 3 3 3]
+ [1 1 2 2 2 3 3 3 3 3]
+ [0 1 1 0 3 3 3 3 3 3]]
+--------------------------------
+[['v' 'v' 'v' 'v' '>' '>' '>' 'W' '<' '<']
+ ['v' 'v' 'v' 'v' 'v' '>' '\^{}' '\^{}' '\^{}' '<']
+ ['v' 'v' 'v' 'v' 'v' 'v' '\^{}' '\^{}' '\^{}' '<']
+ ['v' 'v' 'v' 'v' 'v' 'v' 'v' '\^{}' '\^{}' '\^{}']
+ ['v' 'v' 'v' 'v' 'v' 'v' 'v' '<' '<' 'v']
+ ['v' 'v' 'v' 'v' 'v' 'v' 'v' 'v' 'v' 'v']
+ ['v' 'v' 'v' 'v' 'v' 'v' 'v' '<' '<' 'v']
+ ['>' '>' 'v' 'v' 'v' 'v' '<' '<' '<' '<']
+ ['>' '>' 'v' 'v' 'v' '<' '<' '<' '<' '<']
+ ['W' '>' '>' 'T' '<' '<' '<' '<' '<' '<']]
+--------------------------------
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}357}]:} \PY{n}{question2} \PY{o}{=} \PY{n}{Question2}\PY{p}{(}\PY{p}{)}
+          \PY{n}{j}\PY{p}{,} \PY{n}{p}\PY{p}{,} \PY{n}{Cpv1hist}\PY{p}{,} \PY{n}{Ppv1hist} \PY{o}{=} \PY{n}{question2}\PY{o}{.}\PY{n}{PolicyIteration}\PY{p}{(}\PY{n}{N}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{)}
+          
+          \PY{n}{diff\PYZus{}hist} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{diff}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{Cpv1hist}\PY{p}{)}\PY{p}{,} \PY{n}{axis} \PY{o}{=} \PY{l+m+mi}{0}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{n}{diff\PYZus{}hist}\PY{p}{,} \PY{n}{axis} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Policy Iteration Convergence for variant 2 (terminal state at (3, 0))}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{iterations}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{max(J\PYZus{}\PYZob{}i+1\PYZcb{} \PYZhy{} J\PYZus{}i)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          
+          \PY{n}{question2} \PY{o}{=} \PY{n}{Question2}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}
+          \PY{n}{j}\PY{p}{,} \PY{n}{p}\PY{p}{,} \PY{n}{Cpv2hist}\PY{p}{,} \PY{n}{Ppv2hist} \PY{o}{=} \PY{n}{question2}\PY{o}{.}\PY{n}{PolicyIteration}\PY{p}{(}\PY{n}{N}\PY{o}{=}\PY{l+m+mi}{200}\PY{p}{)}
+          
+          \PY{n}{diff\PYZus{}hist} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{diff}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{Cpv2hist}\PY{p}{)}\PY{p}{,} \PY{n}{axis} \PY{o}{=} \PY{l+m+mi}{0}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{n}{diff\PYZus{}hist}\PY{p}{,} \PY{n}{axis} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Policy Iteration Convergence for variant 1 (terminal state at (9, 9))}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{iterations}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{max(J\PYZus{}\PYZob{}i+1\PYZcb{} \PYZhy{} J\PYZus{}i)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+          
+          \PY{k}{print} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{================= Policy Plot =======================}\PY{l+s+s2}{\PYZdq{}}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{Cpv1hist}\PY{p}{)}\PY{p}{,} \PY{n}{axis} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Policy Iteration, Sum of Policy for variant 2 (terminal state at (3, 0))}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{iterations}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Sum(Policy)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          
+          \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{Cpv2hist}\PY{p}{)}\PY{p}{,} \PY{n}{axis} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Policy Iteration, Sum of Policy for variant 1 (terminal state at (9, 9))}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{iterations}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Sum(Policy)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+          
+          \PY{k}{print} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{=====================================================}\PY{l+s+s2}{\PYZdq{}}
+          
+          \PY{n}{question2} \PY{o}{=} \PY{n}{Question2}\PY{p}{(}\PY{p}{)}
+          \PY{n}{j}\PY{p}{,} \PY{n}{p}\PY{p}{,} \PY{n}{Cvv1hist}\PY{p}{,} \PY{n}{Pvv1hist} \PY{o}{=} \PY{n}{question2}\PY{o}{.}\PY{n}{ValueIteration}\PY{p}{(}\PY{n}{N}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{)}
+          
+          \PY{n}{diff\PYZus{}hist} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{diff}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{Cvv1hist}\PY{p}{)}\PY{p}{,} \PY{n}{axis} \PY{o}{=} \PY{l+m+mi}{0}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{n}{diff\PYZus{}hist}\PY{p}{,} \PY{n}{axis} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Value Iteration Convergence for variant 2 (terminal state at (3, 0))}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{iterations}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{max(J\PYZus{}\PYZob{}i+1\PYZcb{} \PYZhy{} J\PYZus{}i)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          
+          \PY{n}{question2} \PY{o}{=} \PY{n}{Question2}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}
+          \PY{n}{j}\PY{p}{,} \PY{n}{p}\PY{p}{,} \PY{n}{Cvv2hist}\PY{p}{,} \PY{n}{Pvv2hist} \PY{o}{=} \PY{n}{question2}\PY{o}{.}\PY{n}{ValueIteration}\PY{p}{(}\PY{n}{N}\PY{o}{=}\PY{l+m+mi}{200}\PY{p}{)}
+          
+          \PY{n}{diff\PYZus{}hist} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{diff}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{Cvv2hist}\PY{p}{)}\PY{p}{,} \PY{n}{axis} \PY{o}{=} \PY{l+m+mi}{0}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{n}{diff\PYZus{}hist}\PY{p}{,} \PY{n}{axis} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Value Iteration Convergence for variant 1 (terminal state at (9, 9))}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{iterations}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{max(J\PYZus{}\PYZob{}i+1\PYZcb{} \PYZhy{} J\PYZus{}i)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+          
+          \PY{k}{print} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{================= Policy Plot =======================}\PY{l+s+s2}{\PYZdq{}}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{Cvv1hist}\PY{p}{)}\PY{p}{,} \PY{n}{axis} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Value Iteration, Sum of Policy for variant 2 (terminal state at (3, 0))}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{iterations}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Sum(Policy)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          
+          \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{Cvv2hist}\PY{p}{)}\PY{p}{,} \PY{n}{axis} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Value Iteration, Sum of Policy for variant 1 (terminal state at (9, 9))}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{iterations}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Sum(Policy)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+          \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_15_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+================= Policy Plot =======================
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_15_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+=====================================================
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_15_4.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+================= Policy Plot =======================
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_15_6.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \subsubsection{Q2.c}\label{q2.c}
+
+\begin{itemize}
+\tightlist
+\item
+  Based on above plots convergence for Variant 1 can be considered
+  around 25th iteration and for Variant 2 around 25th iteration
+\end{itemize}
+
+\paragraph{Q2.c Variant 1}\label{q2.c-variant-1}
+
+    \subsubsection{Q2.d}\label{q2.d}
+
+\begin{itemize}
+\tightlist
+\item
+  Once value iteration is converged the cost and policy per state
+  remains constant
+\item
+  After convergence action at each state leads to terminal state high
+  reward (+100)
+\end{itemize}
+
+\subsubsection{Reference}\label{reference}
+
+\begin{itemize}
+\tightlist
+\item
+  Prashanth L. A. CS6700: Reinforcement learning Course notes, 2018
+\item
+  Dimitri P. Bertsekas. Dynamic Programming and Optimal Control, vol. I.
+  Athena Scientific, 2017.
+\end{itemize}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}
