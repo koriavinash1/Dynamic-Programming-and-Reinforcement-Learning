@@ -1,6 +1,7 @@
 # Finite-state MDP solved using Value Iteration
 import tensorflow as tf
 import numpy as np
+import matplotlib.pyplot as plt
 import gym
 
 env = gym.make('CartPole-v0')
@@ -35,7 +36,7 @@ def make_observation_bins(minV, maxV, num_bins):
 
 observation_dimension_bins = []
 for observation_dimension in range(num_observation_dimensions):
-    	observation_dimension_bins.append(make_observation_bins(observation_space_low[observation_dimension], 
+	observation_dimension_bins.append(make_observation_bins(observation_space_low[observation_dimension], 
 							    observation_space_high[observation_dimension], 
 							    num_bins_per_observation_dimension))
     
@@ -46,13 +47,13 @@ print("[INFO]: observation_dimension {}".format(observation_dimension_bins))
 
 
 def observation_to_state(observation):
-    	state = 0
-    	for observation_dimension in range(num_observation_dimensions):
+	state = 0
+	for observation_dimension in range(num_observation_dimensions):
 		state = state + np.digitize(observation[observation_dimension],\
 				observation_dimension_bins[observation_dimension])*\
 				num_bins_per_observation_dimension**observation_dimension
 	
-    	return state
+	return state
   
 print("[INFO]: Min State: {} Max State: {} Num States: {}".format(observation_to_state([-5,-5,-5,-5.5]), \
 							    observation_to_state([5,5,5,5.5]),
@@ -66,26 +67,26 @@ state_transition_counters = np.zeros((num_states, num_states, num_actions))
 def pick_best_action(current_state, state_values, state_transition_probabilities):
 	best_action = -1
 	best_action_value = -np.Inf
-    	for a_i in range(num_actions):
+	for a_i in range(num_actions):
 		action_value = state_transition_probabilities[current_state,:,a_i].dot(state_values)
 		if (action_value > best_action_value):
-		    	best_action_value = action_value
-		    	best_action = a_i
+			best_action_value = action_value
+			best_action = a_i
 		elif (action_value == best_action_value):
-		    	if np.random.randint(0,2) == 0:
+			if np.random.randint(0,2) == 0:
 				best_action = a_i
 	    
-    	return best_action
+	return best_action
 
 
 def update_state_transition_probabilities_from_counters(probabilities, counters):
-    	for a_i in range(num_actions):
+	for a_i in range(num_actions):
 		for s_i in range(num_states):
-	    		total_transitions_out_of_state = np.sum(counters[s_i,:,a_i])
-	    		if(total_transitions_out_of_state > 0):
+			total_transitions_out_of_state = np.sum(counters[s_i,:,a_i])
+			if(total_transitions_out_of_state > 0):
 				probabilities[s_i,:,a_i] = counters[s_i,:,a_i] / total_transitions_out_of_state
 	    
-    	return probabilities
+	return probabilities
 
 
 def run_value_iteration(state_values, state_transition_probabilities, state_rewards):
@@ -113,16 +114,16 @@ def run_value_iteration(state_values, state_transition_probabilities, state_rewa
 	  
 	
 episode_rewards = []
-# env.monitor.start('training_dir3', force=True)
-for i_episode in range(1000):
+for i_episode in range(100):
 	current_observation = env.reset()
 	current_state = observation_to_state(current_observation)
 
 	episode_reward = 0
-	
+
 	env.render()
 	for t in range(500):
 		action = pick_best_action(current_state, state_values, state_transition_probabilities)
+		# action = np.random.randint(2)
 
 		old_state = current_state
 		observation, reward, done, info = env.step(action)
@@ -150,7 +151,6 @@ for i_episode in range(1000):
 			state_values = run_value_iteration(state_values, state_transition_probabilities, state_rewards)
 			break
 
-#env.monitor.close()
 
 plt.plot(episode_rewards)
 plt.show()
