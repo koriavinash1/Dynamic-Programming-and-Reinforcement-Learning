@@ -24,11 +24,13 @@ num_states = num_bins_per_observation_dimension**num_observation_dimensions
 
 
 ###################################################################################################
+#                                                                                                 #
+###################################################################################################
 
 def make_observation_bins(minV, maxV, num_bins):
-	if(minV == -np.Inf) or (minV <-10e8):
+	if(minV == -np.Inf) or (minV <-10e4):
 		minV = -5 # Should really learn this const instead
-	if(maxV == np.Inf) or (minV>10e8):
+	if(maxV == np.Inf) or (maxV>10e4):
 		maxV = 5
 	bins = np.arange(minV, maxV, (float(maxV)-float(minV))/((num_bins)-2))
 	bins = np.sort(np.append(bins, [0])) # Ensure we split at 0
@@ -43,8 +45,10 @@ for observation_dimension in range(num_observation_dimensions):
 print("[INFO]: observation_dimension {}".format(observation_dimension_bins))
 
 
-###################################################################################################
 
+###################################################################################################
+#                                                                                                 #
+###################################################################################################
 
 def observation_to_state(observation):
 	state = 0
@@ -63,6 +67,14 @@ state_values = np.random.rand(num_states) * 0.1
 state_rewards = np.zeros((num_states))
 state_transition_probabilities = np.ones((num_states, num_states, num_actions)) / num_states
 state_transition_counters = np.zeros((num_states, num_states, num_actions))
+
+
+
+
+###################################################################################################
+#                                                                                                 #
+###################################################################################################
+
 
 def pick_best_action(current_state, state_values, state_transition_probabilities):
 	best_action = -1
@@ -112,16 +124,22 @@ def run_value_iteration(state_values, state_transition_probabilities, state_rewa
 	return state_values
     
 	  
+
+
+###################################################################################################
+#                                                                                                 #
+###################################################################################################
+
 	
 episode_rewards = []
-for i_episode in range(100):
+for i_episode in range(1000):
 	current_observation = env.reset()
 	current_state = observation_to_state(current_observation)
 
 	episode_reward = 0
 
-	env.render()
-	for t in range(500):
+	# env.render()
+	for t in range(1000):
 		action = pick_best_action(current_state, state_values, state_transition_probabilities)
 		# action = np.random.randint(2)
 
