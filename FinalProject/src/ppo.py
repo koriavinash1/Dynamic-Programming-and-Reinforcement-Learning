@@ -275,7 +275,7 @@ if __name__ == '__main__':
             t += 1
 
             if terminal:
-                print('Episode: %i' % episode, "| Reward: %.2f" % ep_r, '| Steps: %i' % ep_t)
+                # print('Episode: %i' % episode, "| Reward: %.2f" % ep_r, '| Steps: %i' % ep_t)
 
                 # End of episode summary
                 worker_summary = tf.Summary()

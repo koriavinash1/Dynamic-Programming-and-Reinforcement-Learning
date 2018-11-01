@@ -4,13 +4,13 @@
 # In[1]:
 
 
-get_ipython().magic(u'matplotlib inline')
-
 import gym
 import itertools
 import matplotlib
 import numpy as np
 import sys
+import os
+from gym import wrappers
 import sklearn.pipeline
 import sklearn.preprocessing
 
@@ -24,7 +24,18 @@ matplotlib.style.use('ggplot')
 # In[2]:
 
 
-env = gym.envs.make("MountainCar-v0")
+OUTPUT_RESULTS_DIR = "../logs"
+ENVIRONMENT = 'CartPole-v1'
+
+# TIMESTAMP = datetime.now().strftime("%Y%m%d-%H%M%S")
+TIMESTAMP = 'RESULTS'
+env = gym.make(ENVIRONMENT)
+
+SUMMARY_DIR = os.path.join(OUTPUT_RESULTS_DIR, "ApproxValueIteration", ENVIRONMENT, TIMESTAMP)
+env = gym.make(ENVIRONMENT)
+env = wrappers.Monitor(env, os.path.join(SUMMARY_DIR, ENVIRONMENT), force=True, video_callable=None)
+
+
 
 
 # In[3]:
@@ -208,7 +219,6 @@ def q_learning(env, estimator, num_episodes, discount_factor=1.0, epsilon=0.1, e
             
             print("\rStep {} @ Episode {}/{} ({})".format(t, i_episode + 1, num_episodes, last_reward), end="")
                 
-            if done:
                 break
                 
             state = next_state
@@ -236,4 +246,3 @@ stats = q_learning(env, estimator, 100, epsilon=0.0)
 
 plotting.plot_cost_to_go_mountain_car(env, estimator)
 plotting.plot_episode_stats(stats, smoothing_window=25)
-
