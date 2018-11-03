@@ -12,13 +12,20 @@ ENVIRONMENT = 'CartPole-v0'
 
 # TIMESTAMP = datetime.now().strftime("%Y%m%d-%H%M%S")
 TIMESTAMP = 'RESULTS'
-SUMMARY_DIR = os.path.join(OUTPUT_RESULTS_DIR, "CartPoleValueIteration-Observations2", ENVIRONMENT, TIMESTAMP)
+# Hyperparameter
+num_bins_per_observation = 7																																																																													 # Could try different number of bins for the different dimensions
+
+SUMMARY_DIR = os.path.join(OUTPUT_RESULTS_DIR, "CartPoleValueIteration-Observations2_number_bins_"+str(num_bins_per_observation),\
+							 ENVIRONMENT, TIMESTAMP)
 env = gym.make(ENVIRONMENT)
 env = wrappers.Monitor(env, os.path.join(SUMMARY_DIR, ENVIRONMENT), force=True, video_callable=None)
-env.seed(1)
+# env.unwrapped()
+# env.seed(1)
 
+select_observations = lambda O: O#np.array([O[2], O[3]])
 
-observation = env.reset()#[2:]
+observation = env.reset()
+observation = select_observations(observation)
 
 
 observation_dimensions = np.size(observation)
@@ -28,8 +35,6 @@ observation_space_high = env.observation_space.high
 observation_space_low = env.observation_space.low
 
 
-# Hyperparameter
-num_bins_per_observation = 4																																																																														 # Could try different number of bins for the different dimensions
 num_states = num_bins_per_observation**observation_dimensions
 
 
@@ -74,9 +79,12 @@ def observation_to_state(observation):
 	
 	return state
   
-print("[INFO]: Min State: {} Max State: {} Num States: {}".format(observation_to_state([-5,-5,-5,-5]), \
-							    observation_to_state([5,5,5,5]),
+print("[INFO]: Min State: {} Max State: {} Num States: {}".format(observation_to_state([-5,-5,-5,-5.5]), \
+							    observation_to_state([5,5,5,5.5]),
 							    num_states))
+
+
+
 
 state_values = np.random.rand(num_states) * 0.1
 state_rewards = np.zeros((num_states))
@@ -116,9 +124,11 @@ def update_state_transition_probabilities_from_counters(probabilities, counters)
 	return probabilities
 
 
+
+
 def run_value_iteration(state_values, state_transition_probabilities, state_rewards):
 	gamma = 0.9
-	convergence_tolerance = 0.0001
+	convergence_tolerance = 1e-6
 	iteration = 0
 	max_dif = np.Inf
 	while max_dif > convergence_tolerance:  
@@ -146,56 +156,84 @@ def run_value_iteration(state_values, state_transition_probabilities, state_rewa
 ###################################################################################################
 maxtval = 10000
 eps     = 1.0
-mineps  = 0.001
-	
+mineps  = 0.01
+gamma   = 0.9	
 episode_rewards = []
-for i_episode in range(10000):
-	current_observation = env.reset() # [2:]
+
+Train = True
+
+
+if Train:
+	for i_episode in range(5000):
+		current_observation = env.reset()
+		current_observation = select_observations(current_observation)
+		current_state = observation_to_state(current_observation)
+
+		episode_reward = 0
+		# env.render()
+		if i_episode % 50 == 49: eps = max(mineps, eps * 0.1)
+
+		if np.random.uniform() <= eps: current_state = np.random.randint(0, num_states, 1)
+
+		for t in range(maxtval):
+			action = pick_best_action(current_state, state_values, state_transition_probabilities)
+
+			old_state = current_state
+			observation, reward, done, info = env.step(action)
+			observation = select_observations(observation)
+			current_state = observation_to_state(observation)
+			
+
+			state_transition_counters[old_state, current_state, action] += 1
+
+			episode_reward = episode_reward + reward        
+
+			if done or t == maxtval-1:
+				episode_rewards.append(episode_reward)
+				print("[INFO Data {}]============================".format(t))
+				print("Episode: ", i_episode)
+				print("Reward: ", episode_reward)
+				print("Mean Reward: ", np.mean(episode_rewards))
+				print("Max reward so far: ", max(episode_rewards))
+
+				
+				# Average length of episode is > 195, anything less than than 195 has -ve reward
+				# state_rewards[current_state] = (-1 if(t < 195) else +1)
+				# state_rewards[current_state] = (-1 if(t < maxtval) else +1)
+				# state_rewards[current_state] = (-1.0*maxtval)/(t+1) if (t < maxtval-1) else +1.0 
+				state_rewards[current_state] = t
+
+				state_transition_probabilities = \
+					update_state_transition_probabilities_from_counters(state_transition_probabilities,\
+												state_transition_counters)
+				state_values = run_value_iteration(state_values, state_transition_probabilities, state_rewards)
+				break
+
+
+
+	np.save(os.path.join(SUMMARY_DIR, 'state_values.npy') , state_values)
+	np.save(os.path.join(SUMMARY_DIR, 'state_rewards.npy') , state_rewards)
+	np.save(os.path.join(SUMMARY_DIR, 'state_transition_probabilities.npy') , state_transition_probabilities)
+	plt.plot(episode_rewards)
+	plt.show()
+
+else:
+	##########################################################################
+	#                         Model Evaluation                               #
+	##########################################################################
+	state_values = np.load(os.path.join(SUMMARY_DIR, 'state_values.npy'))
+	state_transition_probabilities = np.load(os.path.join(SUMMARY_DIR, 'state_transition_probabilities.npy'))
+	current_observation = env.reset()
+	env.render()
+	current_observation = select_observations(current_observation)
 	current_state = observation_to_state(current_observation)
-
 	episode_reward = 0
-	# env.render()
-
-	eps = max(mineps, eps * 0.1)
-	if np.random.uniform() < eps: current_state = np.random.randint(0, num_states, 1)
-
-	for t in range(maxtval):
+	while True:
 		action = pick_best_action(current_state, state_values, state_transition_probabilities)
-		# action = np.random.randint(2)
 
 		old_state = current_state
 		observation, reward, done, info = env.step(action)
-		# observation = observation[2:]
-		current_state = observation_to_state(observation)
-		
+		episode_reward = episode_reward + reward
+		if done: break
 
-		state_transition_counters[old_state, current_state, action] += 1
-
-		episode_reward = episode_reward + reward        
-
-		if done or t == maxtval:
-			episode_rewards.append(episode_reward)
-			print("[INFO Data]============================")
-			print("Episode: ", i_episode)
-			print("Reward: ", episode_reward)
-			print("Mean Reward", np.mean(episode_rewards))
-			print("Max reward so far: ", max(episode_rewards))
-
-			
-			# Average length of episode is > 195, anything less than than 195 has -ve reward
-			# state_rewards[current_state] = (-1 if(t < 195) else 0)
-			# state_rewards[current_state] = (-1 if(t < maxtval) else +1)
-			state_rewards[current_state] = -1*maxtval/(t+1) if (t < maxtval) else +1 
-
-			state_transition_probabilities = \
-				update_state_transition_probabilities_from_counters(state_transition_probabilities,\
-											state_transition_counters)
-			state_values = run_value_iteration(state_values, state_transition_probabilities, state_rewards)
-			break
-
-
-
-np.save(os.path.join(SUMMARY_DIR, 'state_values.npy') , state_values)
-np.save(os.path.join(SUMMARY_DIR, 'state_transition_probabilities.npy') , state_transition_probabilities)
-plt.plot(episode_rewards)
-plt.show()
+	print ("[INFO] Final evaluation reward: {}".format(episode_reward))
