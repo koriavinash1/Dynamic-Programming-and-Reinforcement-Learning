@@ -11,8 +11,6 @@ ENVIRONMENT = 'InvertedDoublePendulum-v2'
 
 # TIMESTAMP = datetime.now().strftime("%Y%m%d-%H%M%S")
 TIMESTAMP = 'RESULTS'
-env = gym.make(ENVIRONMENT)
-
 SUMMARY_DIR = os.path.join(OUTPUT_RESULTS_DIR, "MonteCarloPG", ENVIRONMENT, TIMESTAMP)
 env = gym.make(ENVIRONMENT)
 env = wrappers.Monitor(env, os.path.join(SUMMARY_DIR, ENVIRONMENT), force=True, video_callable=None)
@@ -181,6 +179,7 @@ with tf.Session() as sess:
                 
                 # Calculate discounted reward
                 discounted_episode_rewards = discount_and_normalize_rewards(episode_rewards)
+                # discounted_episode_rewards = episode_rewards
                                 
 
 

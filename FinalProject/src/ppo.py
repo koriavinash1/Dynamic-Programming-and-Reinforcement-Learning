@@ -26,6 +26,19 @@ SIGMA_FLOOR = 0.0
 MODEL_RESTORE_PATH = None
 
 
+def discount_and_normalize_rewards(episode_rewards):
+    discounted_episode_rewards = np.zeros_like(episode_rewards)
+    cumulative = 0.0
+    for i in reversed(range(len(episode_rewards))):
+        cumulative = cumulative * GAMMA + episode_rewards[i]
+        discounted_episode_rewards[i] = cumulative
+    
+    mean = np.mean(discounted_episode_rewards)
+    std = np.std(discounted_episode_rewards)
+    discounted_episode_rewards = (discounted_episode_rewards - mean) / (std)
+    
+    return discounted_episode_rewards
+
 class PPO(object):
     def __init__(self, environment, summary_dir="./"):
         if len(environment.action_space.shape) > 0:
@@ -238,8 +251,10 @@ if __name__ == '__main__':
                 # Normalise rewards
                 rewards = np.array(buffer_r)
                 rolling_r.update(rewards)
-                rewards = np.clip(rewards / rolling_r.std, -10, 10)
+                # rewards = (rewards - rolling_r.mean) / rolling_r.std
+                rewards = discount_and_normalize_rewards(rewards)
 
+                
                 v_final = [v * (1 - terminal)]  # v = 0 if terminal, otherwise use the predicted v
                 values = np.array(buffer_v + v_final)
                 terminals = np.array(buffer_terminal + [terminal])
@@ -275,7 +290,7 @@ if __name__ == '__main__':
             t += 1
 
             if terminal:
-                # print('Episode: %i' % episode, "| Reward: %.2f" % ep_r, '| Steps: %i' % ep_t)
+                print('Episode: %i' % episode, "| Reward: %.2f" % ep_r, '| Steps: %i' % ep_t)
 
                 # End of episode summary
                 worker_summary = tf.Summary()
