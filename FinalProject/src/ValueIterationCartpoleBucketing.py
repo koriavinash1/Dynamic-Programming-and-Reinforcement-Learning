@@ -239,12 +239,16 @@ if Train:
 	np.save(os.path.join(SUMMARY_DIR, 'state_rewards.npy') , state_rewards)
 	np.save(os.path.join(SUMMARY_DIR, 'state_transition_probabilities.npy') , state_transition_probabilities)
 
-	plt.plot(moving_average(episode_rewards, n = 25))
-	plt.plot(mean_reward)
-	plt.legend(['Episode reward with smoothening widow of n = 15', 'Mean episode reward'])
-	plt.ylabel('Reward')
-	plt.xlabel('Iteration')
-	plt.show()
+
+episode_rewards = moving_average(episode_rewards, n = 50)
+episode_rewards[0] = mean_reward[30]
+plt.plot(episode_rewards)
+plt.plot(mean_reward[30:])
+plt.title('Value Iteration Reward Convergence for 5 Bins')
+plt.legend(['Episode reward with smoothening widow of n = 25', 'Mean episode reward'])
+plt.ylabel('Reward')
+plt.xlabel('Iteration')
+plt.show()
 
 else:
 
