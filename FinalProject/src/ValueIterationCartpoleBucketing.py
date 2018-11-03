@@ -18,11 +18,13 @@ num_bins_per_observation = 7																																																				
 SUMMARY_DIR = os.path.join(OUTPUT_RESULTS_DIR, "CartPoleValueIteration-Observations2_number_bins_"+str(num_bins_per_observation),\
 							 ENVIRONMENT, TIMESTAMP)
 env = gym.make(ENVIRONMENT)
+env._max_episode_steps = 100000
+
 env = wrappers.Monitor(env, os.path.join(SUMMARY_DIR, ENVIRONMENT), force=True, video_callable=None)
 # env.unwrapped()
 # env.seed(1)
 
-select_observations = lambda O: O#np.array([O[2], O[3]])
+select_observations = lambda O: np.array([O[1], O[2], O[3]])
 
 observation = env.reset()
 observation = select_observations(observation)
@@ -159,8 +161,8 @@ eps     = 1.0
 mineps  = 0.01
 gamma   = 0.9	
 episode_rewards = []
-
-Train = True
+mean_reward = []
+Train = False
 
 
 if Train:
@@ -190,6 +192,7 @@ if Train:
 
 			if done or t == maxtval-1:
 				episode_rewards.append(episode_reward)
+				mean_reward.append(np.mean(episode_rewards))
 				print("[INFO Data {}]============================".format(t))
 				print("Episode: ", i_episode)
 				print("Reward: ", episode_reward)
@@ -200,21 +203,30 @@ if Train:
 				# Average length of episode is > 195, anything less than than 195 has -ve reward
 				# state_rewards[current_state] = (-1 if(t < 195) else +1)
 				# state_rewards[current_state] = (-1 if(t < maxtval) else +1)
-				# state_rewards[current_state] = (-1.0*maxtval)/(t+1) if (t < maxtval-1) else +1.0 
-				state_rewards[current_state] = t
+				# state_rewards[current_state] = (-1.0*maxtval)/(t+1) if (t < maxtval-1) else +1.0
+				# state_rewards[current_state] = t
+
+				if t<195:
+					state_rewards[current_state] = -1
+				elif t<300:
+					state_rewards[current_state] = 1 
+				else:
+					state_rewards[current_state] =2 
 
 				state_transition_probabilities = \
 					update_state_transition_probabilities_from_counters(state_transition_probabilities,\
 												state_transition_counters)
 				state_values = run_value_iteration(state_values, state_transition_probabilities, state_rewards)
+				env.close()
 				break
 
 
-
+	print("[INFO] State Rewards: ", state_rewards)
 	np.save(os.path.join(SUMMARY_DIR, 'state_values.npy') , state_values)
 	np.save(os.path.join(SUMMARY_DIR, 'state_rewards.npy') , state_rewards)
 	np.save(os.path.join(SUMMARY_DIR, 'state_transition_probabilities.npy') , state_transition_probabilities)
 	plt.plot(episode_rewards)
+	plt.plot(mean_reward)
 	plt.show()
 
 else:
@@ -228,9 +240,9 @@ else:
 	current_observation = select_observations(current_observation)
 	current_state = observation_to_state(current_observation)
 	episode_reward = 0
+	
 	while True:
 		action = pick_best_action(current_state, state_values, state_transition_probabilities)
-
 		old_state = current_state
 		observation, reward, done, info = env.step(action)
 		episode_reward = episode_reward + reward

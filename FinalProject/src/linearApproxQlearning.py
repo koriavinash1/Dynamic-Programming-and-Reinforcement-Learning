@@ -32,7 +32,7 @@ env = gym.make(ENVIRONMENT)
 env = wrappers.Monitor(env, os.path.join(SUMMARY_DIR, ENVIRONMENT), force=True, video_callable=None)
 env.seed(1)
 
-NUM_ACTIONS = env.action_space.shape[0]
+NUM_ACTIONS = env.action_space.n #shape[0]
 NUM_OBS = env.observation_space.shape[0]
 
 #################### TensorFlow for linear model #####################
@@ -94,10 +94,15 @@ def update(state, state_prime, r):
 	y.append(retval)
 
 
+
+episode_rewards = []
+
 # begin RL
 for episode in range(NUM_EPISODES):
 	state = env.reset()
 	# env.render()
+
+	episode_reward = 0
 
 	for t in range(MAX_T):
 		# get reward accoding to policy
@@ -106,16 +111,24 @@ for episode in range(NUM_EPISODES):
 		action = np.argmax(rewards_from_action)
 
 		# take step with action
-		state_prime, r, done, _ = env.step(action)
+		state_prime, reward, done, info = env.step(action)
 		
+
+		episode_reward = episode_reward + reward
 		if not STOP_TRAIN:
-			update(state, state_prime, r)
+			update(state, state_prime, reward)
 
 		accumulated_samples += 1
 
 		if done or t == MAX_T - 1:
+			episode_rewards.append(episode_reward)
 			if DEBUG_MODE:
-				print("Episode %d completed in %d" % (episode, t))
+				print("[INFO Data {}]============================".format(t))
+				print("Episode: ", i_episode)
+				print("Reward: ", episode_reward)
+				print("Mean Reward: ", np.mean(episode_rewards))
+				print("Max reward so far: ", max(episode_rewards))
+
 			avg += t
 
 			score_100[score_ptr] = t
@@ -133,6 +146,8 @@ for episode in range(NUM_EPISODES):
 		EXPLORATION_RATE *= EXPLORATION_RATE_DECAY
 
 	if episode%100 == 0:
+		
+
 		print("At %d episodes" % (episode))
 		print ("EXPLORATION_RATE:", EXPLORATION_RATE)
 		print ("Average of 100:", avg/100.0)
