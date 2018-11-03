@@ -4,31 +4,40 @@ import numpy as np
 import matplotlib.pyplot as plt
 import gym
 import os
-from gym import wrappers
+#from gym import wrappers
+import pickle
 
-
+print("Started...")
 OUTPUT_RESULTS_DIR = "../logs"
 ENVIRONMENT = 'CartPole-v0'
+#ENVIRONMENT.tags['wrapper_config.TimeLimit.max_episode_steps'] = 10000
 
 # TIMESTAMP = datetime.now().strftime("%Y%m%d-%H%M%S")
 TIMESTAMP = 'RESULTS'
 # Hyperparameter
-num_bins_per_observation = 7																																																																													 # Could try different number of bins for the different dimensions
+num_bins_per_observation = 7																																																																												 # Could try different number of bins for the different dimensions
 
 SUMMARY_DIR = os.path.join(OUTPUT_RESULTS_DIR, "CartPoleValueIteration-Observations2_number_bins_"+str(num_bins_per_observation),\
 							 ENVIRONMENT, TIMESTAMP)
+if not os.path.exists(SUMMARY_DIR):
+	os.makedirs(SUMMARY_DIR)
+
 env = gym.make(ENVIRONMENT)
-env = wrappers.Monitor(env, os.path.join(SUMMARY_DIR, ENVIRONMENT), force=True, video_callable=None)
+env._max_episode_steps = 100000
+
+#env = wrappers.Monitor(env, os.path.join(SUMMARY_DIR, ENVIRONMENT), force=False, video_callable=None)
 # env.unwrapped()
 # env.seed(1)
 
-select_observations = lambda O: O#np.array([O[2], O[3]])
+select_observations = lambda O: np.array([O[2], O[3]])
 
 observation = env.reset()
 observation = select_observations(observation)
 
 
-observation_dimensions = np.size(observation)
+#observation_dimensions = np.size(observation)
+###CHANGE THIS FOR CHANGING USABLE OBS
+observation_dimensions = 3
 num_actions = env.action_space.n
 
 observation_space_high = env.observation_space.high
@@ -72,10 +81,12 @@ print("[INFO]: observation_dimension {} \n high : {} \n low : {}, \n \
 
 def observation_to_state(observation):
 	state = 0
-	for observation_dimension in range(observation_dimensions):
+	# for observation_dimension in range(observation_dimensions):
+	for observation_dimension in range(2,4):
+		###CHANGE THIS FOR CHANGING USABLE OBS
 		state = state + np.digitize(observation[observation_dimension],\
-				observation_dimension_bins[observation_dimension])*\
-				num_bins_per_observation**observation_dimension
+				observation_dimension_bins[observation_dimension-1])*\
+				num_bins_per_observation**(observation_dimension-1)
 	
 	return state
   
@@ -154,17 +165,17 @@ def run_value_iteration(state_values, state_transition_probabilities, state_rewa
 ###################################################################################################
 #                                        iterate loops                                            #
 ###################################################################################################
-maxtval = 10000
+maxtval = 100000
 eps     = 1.0
 mineps  = 0.01
-gamma   = 0.9	
+gamma   = 0.99	
 episode_rewards = []
-
-Train = True
+mean_reward = []
+Train = False
 
 
 if Train:
-	for i_episode in range(5000):
+	for i_episode in range(100):
 		current_observation = env.reset()
 		current_observation = select_observations(current_observation)
 		current_state = observation_to_state(current_observation)
@@ -187,9 +198,10 @@ if Train:
 			state_transition_counters[old_state, current_state, action] += 1
 
 			episode_reward = episode_reward + reward        
-
+			# state_rewards[current_state] = 0.5
 			if done or t == maxtval-1:
 				episode_rewards.append(episode_reward)
+				mean_reward.append(np.mean(episode_rewards))
 				print("[INFO Data {}]============================".format(t))
 				print("Episode: ", i_episode)
 				print("Reward: ", episode_reward)
@@ -198,10 +210,16 @@ if Train:
 
 				
 				# Average length of episode is > 195, anything less than than 195 has -ve reward
-				# state_rewards[current_state] = (-1 if(t < 195) else +1)
+				# state_rewards[current_state] = (-1 if(t < 995) else +1)
+				if t<195:
+					state_rewards[current_state] = -1
+				elif t<300:
+					state_rewards[current_state] = 1 
+				else:
+					state_rewards[current_state] =2
 				# state_rewards[current_state] = (-1 if(t < maxtval) else +1)
 				# state_rewards[current_state] = (-1.0*maxtval)/(t+1) if (t < maxtval-1) else +1.0 
-				state_rewards[current_state] = t
+				#state_rewards[current_state] = t
 
 				state_transition_probabilities = \
 					update_state_transition_probabilities_from_counters(state_transition_probabilities,\
@@ -210,11 +228,12 @@ if Train:
 				break
 
 
-
+	print("State Rewards: ", state_rewards)
 	np.save(os.path.join(SUMMARY_DIR, 'state_values.npy') , state_values)
 	np.save(os.path.join(SUMMARY_DIR, 'state_rewards.npy') , state_rewards)
 	np.save(os.path.join(SUMMARY_DIR, 'state_transition_probabilities.npy') , state_transition_probabilities)
 	plt.plot(episode_rewards)
+	plt.plot(mean_reward)
 	plt.show()
 
 else:
@@ -237,3 +256,14 @@ else:
 		if done: break
 
 	print ("[INFO] Final evaluation reward: {}".format(episode_reward))
+	env.close()
+print("Writing File ....")
+policy = np.array([pick_best_action(i,state_values,state_transition_probabilities) for i in range(num_states)])
+print(policy[1:10])
+path = "/home/hari/Acads/RL/IRL/cartpole_irl/"
+filename = "ARGS1.txt"
+file = open(path+filename,"wb")
+args = [state_transition_probabilities,policy,state_rewards]
+pickle.dump(args,file,protocol=2)
+file.close()
+
