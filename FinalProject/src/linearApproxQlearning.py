@@ -157,7 +157,7 @@ if Train:
 			print("At %d episodes" % (episode))
 			print ("EXPLORATION_RATE:", EXPLORATION_RATE)
 			print ("Average of 100:", avg/MAX_T)
-			# print (session.run(hidden_weights))
+			print (session.run(hidden_weights))
 			print ("\n")
 			avg = 0
 

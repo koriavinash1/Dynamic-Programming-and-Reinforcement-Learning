@@ -27,7 +27,7 @@ if not os.path.exists(SUMMARY_DIR):
 env = gym.make(ENVIRONMENT)
 env._max_episode_steps = 100000
 
-env = wrappers.Monitor(env, os.path.join(SUMMARY_DIR, ENVIRONMENT), force=True, video_callable=None)
+env = wrappers.Monitor(env, os.path.join(SUMMARY_DIR, ENVIRONMENT), force=True, video_callable=False)
 # env.unwrapped()
 env.seed(1)
 
@@ -51,6 +51,11 @@ num_states = num_bins_per_observation**observation_dimensions
 ###################################################################################################
 #                                     descretizing funcitons                                      #
 ###################################################################################################
+def moving_average(a, n=3) :
+    ret = np.cumsum(a, dtype=float)
+    ret[n:] = ret[n:] - ret[:-n]
+    return ret[n - 1:] / n
+
 
 def make_observation_bins(minV, maxV, num_bins):
 	if(minV == -np.Inf) or (minV < -10e4):
@@ -175,7 +180,7 @@ Train = True
 
 
 if Train:
-	for i_episode in range(3000):
+	for i_episode in range(500):
 		current_observation = env.reset()
 		current_observation = select_observations(current_observation)
 		current_state = observation_to_state(current_observation)
@@ -233,8 +238,12 @@ if Train:
 	np.save(os.path.join(SUMMARY_DIR, 'state_values.npy') , state_values)
 	np.save(os.path.join(SUMMARY_DIR, 'state_rewards.npy') , state_rewards)
 	np.save(os.path.join(SUMMARY_DIR, 'state_transition_probabilities.npy') , state_transition_probabilities)
-	plt.plot(episode_rewards)
+
+	plt.plot(moving_average(episode_rewards, n = 25))
 	plt.plot(mean_reward)
+	plt.legend(['Episode reward with smoothening widow of n = 15', 'Mean episode reward'])
+	plt.ylabel('Reward')
+	plt.xlabel('Iteration')
 	plt.show()
 
 else:
