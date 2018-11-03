@@ -5,18 +5,23 @@ import matplotlib.pyplot as plt
 import gym
 import os
 from gym import wrappers
+import pickle
 
-
+print("Started...")
 OUTPUT_RESULTS_DIR = "../logs"
 ENVIRONMENT = 'CartPole-v0'
 
 # TIMESTAMP = datetime.now().strftime("%Y%m%d-%H%M%S")
 TIMESTAMP = 'RESULTS'
 # Hyperparameter
-num_bins_per_observation = 7																																																																													 # Could try different number of bins for the different dimensions
+num_bins_per_observation = 7																																																																												 # Could try different number of bins for the different dimensions
 
 SUMMARY_DIR = os.path.join(OUTPUT_RESULTS_DIR, "CartPoleValueIteration-Observations2_number_bins_"+str(num_bins_per_observation),\
 							 ENVIRONMENT, TIMESTAMP)
+
+if not os.path.exists(SUMMARY_DIR):
+	os.makedirs(SUMMARY_DIR)
+
 env = gym.make(ENVIRONMENT)
 env._max_episode_steps = 100000
 
@@ -156,17 +161,17 @@ def run_value_iteration(state_values, state_transition_probabilities, state_rewa
 ###################################################################################################
 #                                        iterate loops                                            #
 ###################################################################################################
-maxtval = 10000
+maxtval = 100000
 eps     = 1.0
 mineps  = 0.01
-gamma   = 0.9	
+gamma   = 0.99	
 episode_rewards = []
 mean_reward = []
-Train = False
+Train = True
 
 
 if Train:
-	for i_episode in range(5000):
+	for i_episode in range(100):
 		current_observation = env.reset()
 		current_observation = select_observations(current_observation)
 		current_state = observation_to_state(current_observation)
@@ -189,7 +194,7 @@ if Train:
 			state_transition_counters[old_state, current_state, action] += 1
 
 			episode_reward = episode_reward + reward        
-
+			# state_rewards[current_state] = 0.5
 			if done or t == maxtval-1:
 				episode_rewards.append(episode_reward)
 				mean_reward.append(np.mean(episode_rewards))
@@ -201,17 +206,14 @@ if Train:
 
 				
 				# Average length of episode is > 195, anything less than than 195 has -ve reward
-				# state_rewards[current_state] = (-1 if(t < 195) else +1)
-				# state_rewards[current_state] = (-1 if(t < maxtval) else +1)
-				# state_rewards[current_state] = (-1.0*maxtval)/(t+1) if (t < maxtval-1) else +1.0
-				# state_rewards[current_state] = t
-
+				# state_rewards[current_state] = (-1 if(t < 995) else +1)
 				if t<195:
 					state_rewards[current_state] = -1
 				elif t<300:
 					state_rewards[current_state] = 1 
 				else:
-					state_rewards[current_state] =2 
+					state_rewards[current_state] =2
+				# state_rewards[current_state] = (-1 if(t < maxtval) else +1)
 
 				state_transition_probabilities = \
 					update_state_transition_probabilities_from_counters(state_transition_probabilities,\
@@ -219,7 +221,6 @@ if Train:
 				state_values = run_value_iteration(state_values, state_transition_probabilities, state_rewards)
 				env.close()
 				break
-
 
 	print("[INFO] State Rewards: ", state_rewards)
 	np.save(os.path.join(SUMMARY_DIR, 'state_values.npy') , state_values)
@@ -249,3 +250,15 @@ else:
 		if done: break
 
 	print ("[INFO] Final evaluation reward: {}".format(episode_reward))
+	env.close()
+print("Writing File ....")
+policy = np.array([pick_best_action(i,state_values,state_transition_probabilities) for i in range(num_states)])
+print(policy[1:10])
+
+
+path = "../logs/IRL/"
+filename = "ARGS1.txt"
+file = open(path+filename,"wb")
+args = [state_transition_probabilities,policy,state_rewards]
+pickle.dump(args,file,protocol=2)
+file.close()
