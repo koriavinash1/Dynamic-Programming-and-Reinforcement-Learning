@@ -161,6 +161,7 @@ def run_value_iteration(state_values, state_transition_probabilities, state_rewa
 ###################################################################################################
 #                                        iterate loops                                            #
 ###################################################################################################
+
 maxtval = 100000
 eps     = 1.0
 mineps  = 0.01
@@ -231,6 +232,7 @@ if Train:
 	plt.show()
 
 else:
+
 	##########################################################################
 	#                         Model Evaluation                               #
 	##########################################################################
@@ -251,6 +253,13 @@ else:
 
 	print ("[INFO] Final evaluation reward: {}".format(episode_reward))
 	env.close()
+
+
+
+##########################################################################
+#                         IRL Arguments                                  #
+##########################################################################
+
 print("Writing File ....")
 policy = np.array([pick_best_action(i,state_values,state_transition_probabilities) for i in range(num_states)])
 print(policy[1:10])
