@@ -1,0 +1,7 @@
+MonteCarlo PG:
+PPO: 
+
+LPP: for IRL
+Max Entropy
+Deep Max Entropy
+Reward Constrained IRL wth LPP

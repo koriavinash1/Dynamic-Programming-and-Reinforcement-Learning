@@ -36,7 +36,9 @@ env.seed(1)
 NUM_ACTIONS = env.action_space.n #shape[0]
 NUM_OBS = env.observation_space.shape[0]
 
-#################### TensorFlow for linear model #####################
+######################################################################
+#						Tensorflow Graph Define                      #
+######################################################################
 
 session = tf.Session()
 state_ = tf.placeholder("float", [None, NUM_OBS])
@@ -54,11 +56,11 @@ saver = tf.train.Saver()
 session.run(tf.initialize_all_variables())
 
 ######################################################################
+#                         Control Parameters                         # 
+######################################################################
 
 STOP_TRAIN = False
 DEBUG_MODE = True
-
-
 Train = False
 avg = 0
 
@@ -69,6 +71,10 @@ y = []
 score_100 = [0 for i in range(100)]
 score_ptr = 0
 accumulated_samples = 0
+
+######################################################################
+#                         Required Functions                         # 
+######################################################################
 
 def get_reward(state, on = True):
 	p = np.random.uniform(0,1)
@@ -85,13 +91,13 @@ def update(state, state_prime, r):
 	reward = get_reward(state, on = False)[0]
 	reward_prime = get_reward(state_prime, on = False)[0]
 
-	q_prime = max(reward_prime)
+	v_prime = max(reward_prime)
 	action_prime = np.argmax(reward_prime)
 
 	retval = []
 	for i in range(NUM_ACTIONS):
 		if i==action_prime:
-			retval.append( r + GAMMA*q_prime )
+			retval.append( r + GAMMA*v_prime )
 		else:
 			retval.append( reward[i] )
 
@@ -100,11 +106,19 @@ def update(state, state_prime, r):
 
 
 
+
+######################################################################
+#                             Optimization                           # 
+######################################################################
+
 episode_rewards = []
 mean_rewards = []
 
 # begin RL
 if Train:
+	##########################################################################
+	#                           Model Training                               #
+	##########################################################################
 	for episode in range(NUM_EPISODES):
 		state = env.reset()
 		# env.render()
