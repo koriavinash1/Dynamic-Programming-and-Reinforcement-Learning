@@ -1,11 +1,12 @@
 import tensorflow as tf
 import numpy as np
+import matplotlib.pyplot as plt
 import gym
 import os
 from gym import wrappers
 
 ## TRAINING Hyperparameters
-NUM_EPISODES = 500
+NUM_EPISODES = 400
 MAX_T = 10000
 GAMMA = 0.99 # Discount rate
 LEARNING_RATE = 0.001
@@ -57,8 +58,8 @@ def moving_average(a, n=3) :
 def discount_and_normalize_rewards(episode_rewards):
     discounted_episode_rewards = np.zeros_like(episode_rewards)
     cumulative = 0.0
-        cumulative = cumulative * GAMMA + episode_rewards[i]
     for i in reversed(range(len(episode_rewards))):
+        cumulative = cumulative * GAMMA + episode_rewards[i]
         discounted_episode_rewards[i] = cumulative
     
     mean = np.mean(discounted_episode_rewards)
@@ -138,14 +139,13 @@ write_op = tf.summary.merge_all()
 saver = tf.train.Saver()
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
-
+mean_rewards = []
 if Train:
     ##########################################################################
     #                           Model Training                               #
     ##########################################################################
     for episode in range(NUM_EPISODES):
         
-        for tt in range(MAX_T):
         episode_rewards_sum = 0
 
         # Launch the game
@@ -154,6 +154,7 @@ if Train:
         # env.render()
            
             
+        for tt in range(MAX_T):
             # Choose action a, remember WE'RE NOT IN A DETERMINISTIC ENVIRONMENT, WE'RE OUTPUT PROBABILITIES.
             action_probability_distribution = sess.run(action_distribution, feed_dict={input_: state.reshape([1,state_size])})
             action = np.random.choice(range(action_probability_distribution.shape[1]), p=action_probability_distribution.ravel())
@@ -162,7 +163,6 @@ if Train:
             new_state, reward, done, info = env.step(action)
 
             # Store s, a, r
-            if done or (tt == (MAX_T - 1)):
             episode_states.append(state)
             action_ = np.zeros(action_size)
             action_[action] = 1
@@ -170,12 +170,14 @@ if Train:
             episode_actions.append(action_)
             
             episode_rewards.append(reward)
+
+            if done or (tt == (MAX_T - 1)):
                 episode_rewards_sum = np.sum(episode_rewards)
                 allRewards.append(episode_rewards_sum)
                 total_rewards = np.sum(allRewards)
                 mean_reward = np.divide(total_rewards, episode+1)
                 maximumRewardRecorded = np.amax(allRewards)
-                
+                mean_rewards.append(mean_reward)
 
 
                 print("==========================================")
@@ -210,10 +212,10 @@ if Train:
 
 
 
-    episode_rewards = moving_average(episode_rewards, n = 30)
-    episode_rewards[0] = mean_reward[10]
-    plt.plot(episode_rewards)
-    plt.plot(mean_reward[10:])
+    allRewards = moving_average(allRewards, n = 30)
+    allRewards[0] = mean_rewards[10]
+    plt.plot(allRewards)
+    plt.plot(mean_rewards[10:])
     plt.title('Monte Carlo Policy Gradient Reward Convergence')
     plt.legend(['Episode reward with smoothening widow of n = 25', 'Mean episode reward'])
     plt.ylabel('Reward')
