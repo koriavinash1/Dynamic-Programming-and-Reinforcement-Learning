@@ -4,15 +4,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import gym
 import os
-#from gym import wrappers
+from gym import wrappers
 import pickle
 from collections import namedtuple
 import dill
+from time import time 
 
-print("Started...")
 OUTPUT_RESULTS_DIR = "../logs"
 ENVIRONMENT = 'CartPole-v0'
-#ENVIRONMENT.tags['wrapper_config.TimeLimit.max_episode_steps'] = 10000
+# ENVIRONMENT = 'InvertedPendulum-v2'
 
 # TIMESTAMP = datetime.now().strftime("%Y%m%d-%H%M%S")
 TIMESTAMP = 'RESULTS'
@@ -20,28 +20,27 @@ TIMESTAMP = 'RESULTS'
 #Best found : num_bins_per_observation = 12 ; select_observations = lambda O: np.array([O[1],O[2],O[3]])
 num_bins_per_observation = 6																																																																												 # Could try different number of bins for the different dimensions
 
-SUMMARY_DIR = os.path.join(OUTPUT_RESULTS_DIR, "CartPoleValueIteration-Observations2_number_bins_"+str(num_bins_per_observation),\
+SUMMARY_DIR = os.path.join(OUTPUT_RESULTS_DIR, "ValueIteration-number_bins_"+str(num_bins_per_observation),\
 							 ENVIRONMENT, TIMESTAMP)
+
 if not os.path.exists(SUMMARY_DIR):
 	os.makedirs(SUMMARY_DIR)
 
 env = gym.make(ENVIRONMENT)
 env._max_episode_steps = 100000
 
-#env = wrappers.Monitor(env, os.path.join(SUMMARY_DIR, ENVIRONMENT), force=False, video_callable=None)
+env = wrappers.Monitor(env, os.path.join(SUMMARY_DIR, ENVIRONMENT), force=True, video_callable=False)
 # env.unwrapped()
 env.seed(1)
 
 select_observations = lambda O: np.array([O[1],O[2],O[3]])
-
 observation = env.reset()
 observation = select_observations(observation)
 
 
 observation_dimensions = np.size(observation)
-###CHANGE THIS FOR CHANGING USABLE OBS
-#observation_dimensions = 3
-num_actions = env.action_space.n
+try: num_actions = env.action_space.n
+except: num_actions = env.action_space.shape[0]
 
 observation_space_high = env.observation_space.high
 observation_space_low = env.observation_space.low
@@ -53,6 +52,11 @@ num_states = num_bins_per_observation**observation_dimensions
 ###################################################################################################
 #                                     descretizing funcitons                                      #
 ###################################################################################################
+def moving_average(a, n=3) :
+    ret = np.cumsum(a, dtype=float)
+    ret[n:] = ret[n:] - ret[:-n]
+    return ret[n - 1:] / n
+
 
 def make_observation_bins(minV, maxV, num_bins):
 	if(minV == -np.Inf) or (minV < -10e4):
@@ -85,12 +89,9 @@ print("[INFO]: observation_dimension {} \n high : {} \n low : {}, \n \
 def observation_to_state(observation):
 	state = 0
 	for observation_dimension in range(observation_dimensions):
-	# for observation_dimension in range(2,4):
-		###CHANGE THIS FOR CHANGING USABLE OBS
 		state = state + np.digitize(observation[observation_dimension],\
 				observation_dimension_bins[observation_dimension])*\
-				num_bins_per_observation**(observation_dimension)
-	
+				num_bins_per_observation**observation_dimension	
 	return state
   
 print("[INFO]: Min State: {} Max State: {} Num States: {}".format(observation_to_state([-5,-5,-5,-5.5]), \
@@ -168,9 +169,10 @@ def run_value_iteration(state_values, state_transition_probabilities, state_rewa
 ###################################################################################################
 #                                        iterate loops                                            #
 ###################################################################################################
+
 maxtval = 100000
 eps     = 1.0
-mineps  = 0.01
+mineps  = 0.2
 gamma   = 0.99	
 episode_rewards = []
 mean_reward = []
@@ -178,7 +180,7 @@ Train = True
 
 
 if Train:
-	for i_episode in range(100):
+	for i_episode in range(500):
 		current_observation = env.reset()
 		current_observation = select_observations(current_observation)
 		current_state = observation_to_state(current_observation)
@@ -201,7 +203,7 @@ if Train:
 			state_transition_counters[old_state, current_state, action] += 1
 
 			episode_reward = episode_reward + reward        
-			#state_rewards[current_state] = 0.5
+			st_time = time()
 			if done or t == maxtval-1:
 				episode_rewards.append(episode_reward)
 				mean_reward.append(np.mean(episode_rewards))
@@ -214,32 +216,40 @@ if Train:
 				
 				# Average length of episode is > 195, anything less than than 195 has -ve reward
 				# state_rewards[current_state] = (-1 if(t < 995) else +1)
-				if t<195:
-					state_rewards[current_state] = -1
-				elif t<300:
-					state_rewards[current_state] = 1 
-				else:
-					state_rewards[current_state] =2
-				# state_rewards[current_state] = (-1 if(t < maxtval) else +1)
-				# state_rewards[current_state] = (-1.0*maxtval)/(t+1) if (t < maxtval-1) else +1.0 
-				#state_rewards[current_state] = t
+				# state_rewards[current_state] = (-1 if(t < maxtval - 100) else +1)
+				state_rewards[current_state] = (-1*maxtval/(t+1) if(t < maxtval) else +1)
+				# if t<195:
+				# 	state_rewards[current_state] = -1
+				# elif t<300:
+				# 	state_rewards[current_state] = 1 
+				# else:
+				# 	state_rewards[current_state] =2
 
 				state_transition_probabilities = \
 					update_state_transition_probabilities_from_counters(state_transition_probabilities,\
 												state_transition_counters)
 				state_values = run_value_iteration(state_values, state_transition_probabilities, state_rewards)
+				if time() - st_time > 25000: env.close()
 				break
 
-
-	print("State Rewards: ", state_rewards)
+	print("[INFO] State Rewards: ", state_rewards)
 	np.save(os.path.join(SUMMARY_DIR, 'state_values.npy') , state_values)
 	np.save(os.path.join(SUMMARY_DIR, 'state_rewards.npy') , state_rewards)
 	np.save(os.path.join(SUMMARY_DIR, 'state_transition_probabilities.npy') , state_transition_probabilities)
-	plt.plot(episode_rewards)
-	plt.plot(mean_reward)
-	plt.show()
+
+
+episode_rewards = moving_average(episode_rewards, n = 50)
+episode_rewards[0] = mean_reward[30]
+plt.plot(episode_rewards)
+plt.plot(mean_reward[30:])
+plt.title('Value Iteration Reward Convergence for 5 Bins')
+plt.legend(['Episode reward with smoothening widow of n = 25', 'Mean episode reward'])
+plt.ylabel('Reward')
+plt.xlabel('Iteration')
+plt.show()
 
 else:
+
 	##########################################################################
 	#                         Model Evaluation                               #
 	##########################################################################
@@ -250,9 +260,9 @@ else:
 	current_observation = select_observations(current_observation)
 	current_state = observation_to_state(current_observation)
 	episode_reward = 0
+	
 	while True:
 		action = pick_best_action(current_state, state_values, state_transition_probabilities)
-
 		old_state = current_state
 		observation, reward, done, info = env.step(action)
 		episode_reward = episode_reward + reward
@@ -315,8 +325,8 @@ def generate_demonstrations(n_trajs=10, len_traj=500):
 
 path = "/home/hari/Acads/RL/IRL/cartpole_irl/"
 filename = "ARGS_max_entropy.txt"
+
 file = open(path+filename,"wb")
 args = [state_transition_probabilities,generate_demonstrations(),state_rewards]
 pickle.dump(args,file,protocol=2)
 file.close()
-

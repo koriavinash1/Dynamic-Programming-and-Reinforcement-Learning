@@ -25,7 +25,7 @@ matplotlib.style.use('ggplot')
 
 
 OUTPUT_RESULTS_DIR = "../logs"
-ENVIRONMENT = 'MountainCar-v0'
+ENVIRONMENT = 'CartPole-v0'
 
 # TIMESTAMP = datetime.now().strftime("%Y%m%d-%H%M%S")
 TIMESTAMP = 'RESULTS'
@@ -219,7 +219,7 @@ def q_learning(env, estimator, num_episodes, discount_factor=1.0, epsilon=0.1, e
 			
 			print("\rStep {} @ Episode {}/{} ({})".format(t, i_episode + 1, num_episodes, last_reward), end="")
 				
-			break
+			if done: break
 				
 			state = next_state
 	
