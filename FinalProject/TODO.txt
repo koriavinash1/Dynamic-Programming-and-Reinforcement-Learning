@@ -1,7 +1,12 @@
-MonteCarlo PG:
+RL Tasks: ------------
+
+Bucketting Value Iteration: done
+Linear Approx Q-learning: done
+MonteCarlo PG: done
 PPO: 
 
-LPP: for IRL
-Max Entropy
-Deep Max Entropy
+IRL Tasks: -----------
+LPP: 
+Max Entropy:
+Deep Max Entropy:
 Reward Constrained IRL wth LPP
