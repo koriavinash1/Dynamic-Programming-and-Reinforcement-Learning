@@ -214,13 +214,13 @@ if Train:
 
     allRewards = moving_average(allRewards, n = 30)
     allRewards[0] = mean_rewards[10]
-    plt.plot(allRewards)
-    plt.plot(mean_rewards[10:])
-    plt.title('Monte Carlo Policy Gradient Reward Convergence')
-    plt.legend(['Episode reward with smoothening widow of n = 25', 'Mean episode reward'])
-    plt.ylabel('Reward')
-    plt.xlabel('Episodes')
-    plt.show()
+	plt.plot(allRewards)
+	plt.plot(mean_rewards[10:])
+	plt.title('Monte Carlo Policy Gradient Reward Convergence')
+	plt.legend(['Episode reward with smoothening widow of n = 25', 'Mean episode reward'])
+	plt.ylabel('Reward')
+	plt.xlabel('Episodes')
+	plt.show()
 
 else:
     ##########################################################################
