@@ -190,7 +190,7 @@ if Train:
 	plt.title('Linear Approx Value Iteration Reward Convergence')
 	plt.legend(['Episode reward with smoothening widow of n = 25', 'Mean episode reward'])
 	plt.ylabel('Reward')
-	plt.xlabel('Iteration')
+	plt.xlabel('Episodes')
 	plt.show()
 
 

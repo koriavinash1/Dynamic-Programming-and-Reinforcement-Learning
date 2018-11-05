@@ -8,7 +8,6 @@ from gym import wrappers
 import pickle
 from time import time 
 
-print("Started...")
 OUTPUT_RESULTS_DIR = "../logs"
 ENVIRONMENT = 'CartPole-v0'
 # ENVIRONMENT = 'InvertedPendulum-v2'
