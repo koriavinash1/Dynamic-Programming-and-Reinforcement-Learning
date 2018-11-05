@@ -10,9 +10,9 @@ import matplotlib.pyplot as plt
 from gym import wrappers
 import tensorflow as tf
 
-NUM_EPISODES = 10000
-MAX_T = 100000
-GAMMA = 0.9
+NUM_EPISODES = 1000
+MAX_T = 1000
+GAMMA = 0.99
 LEARNING_RATE = 0.001
 EXPLORATION_RATE = 1.0
 EXPLORATION_RATE_DECAY = 0.010
@@ -45,7 +45,7 @@ state_ = tf.placeholder("float", [None, NUM_OBS])
 targets = tf.placeholder("float", [None, NUM_ACTIONS])
 
 
-hidden_weights = tf.Variable(tf.random_uniform(shape=[NUM_OBS, NUM_ACTIONS], minval=-0.0001, maxval=0.0001, dtype=tf.float32))
+hidden_weights = tf.Variable(tf.random_uniform(shape=[NUM_OBS, NUM_ACTIONS], dtype=tf.float32))
 output = tf.matmul(state_, hidden_weights)
 
 loss = tf.reduce_mean(tf.square(output - targets)) + LAMBDA*tf.reduce_mean(hidden_weights)
@@ -60,8 +60,8 @@ session.run(tf.initialize_all_variables())
 ######################################################################
 
 STOP_TRAIN = False
-DEBUG_MODE = True
-Train = False
+DEBUG_MODE = False
+Train = True
 avg = 0
 
 # to store samples for training
@@ -75,6 +75,11 @@ accumulated_samples = 0
 ######################################################################
 #                         Required Functions                         # 
 ######################################################################
+def moving_average(a, n=3) :
+    ret = np.cumsum(a, dtype=float)
+    ret[n:] = ret[n:] - ret[:-n]
+    return ret[n - 1:] / n
+
 
 def get_reward(state, on = True):
 	p = np.random.uniform(0,1)
@@ -169,17 +174,25 @@ if Train:
 			
 			saver.save(session, os.path.join(SUMMARY_DIR, "model.ckpt"), global_step=None)
 			print("At %d episodes" % (episode))
-			print ("EXPLORATION_RATE:", EXPLORATION_RATE)
-			print ("Average of 100:", avg/MAX_T)
+			print("EXPLORATION_RATE:", EXPLORATION_RATE)
+			print("Average of 100:", episode_reward)
+			print("Max reward so far: ", max(episode_rewards))
 			print (session.run(hidden_weights))
 			print ("\n")
 			avg = 0
 
 
 
+	episode_rewards = moving_average(episode_rewards, n = 50)
+	episode_rewards[0] = mean_rewards[30]
 	plt.plot(episode_rewards)
-	plt.plot(mean_rewards)
+	plt.plot(mean_rewards[30:])
+	plt.title('Linear Approx Value Iteration Reward Convergence')
+	plt.legend(['Episode reward with smoothening widow of n = 25', 'Mean episode reward'])
+	plt.ylabel('Reward')
+	plt.xlabel('Iteration')
 	plt.show()
+
 
 
 else:
