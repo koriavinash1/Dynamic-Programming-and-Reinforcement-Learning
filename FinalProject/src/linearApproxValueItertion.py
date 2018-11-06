@@ -31,7 +31,6 @@ SUMMARY_DIR = os.path.join(OUTPUT_RESULTS_DIR, "ApproxValueIteration", ENVIRONME
 env = gym.make(ENVIRONMENT)
 env._max_episode_steps = 100000
 env = wrappers.Monitor(env, os.path.join(SUMMARY_DIR, ENVIRONMENT), force=True, video_callable=None)
-env.seed(1)
 
 NUM_ACTIONS = env.action_space.n #shape[0]
 NUM_OBS = env.observation_space.shape[0]
@@ -220,8 +219,7 @@ else:
 	episode_reward = 0
 	
 	while True:
-		state = np.expand_dims(state, axis=0)
-		rewards_from_action = get_reward(state)[0]
+		rewards_from_action = get_reward(state, on=False)[0]
 		action = np.argmax(rewards_from_action)
 		state, reward, done, info = env.step(action)
 		episode_reward = episode_reward + reward

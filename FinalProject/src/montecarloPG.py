@@ -17,8 +17,8 @@ LAMBDA = 0.01
 
 
 OUTPUT_RESULTS_DIR = "../logs"
-# ENVIRONMENT = 'CartPole-v1'
-ENVIRONMENT = 'InvertedDoublePendulum-v2'
+ENVIRONMENT = 'CartPole-v1'
+# ENVIRONMENT = 'InvertedDoublePendulum-v2'
 
 # TIMESTAMP = datetime.now().strftime("%Y%m%d-%H%M%S")
 TIMESTAMP = 'RESULTS'
@@ -45,7 +45,7 @@ total_rewards = 0
 maximumRewardRecorded = 0
 episode = 0
 episode_states, episode_actions, episode_rewards = [],[],[]
-Train = True
+Train = False
 
 
 ######################################################################
