@@ -10,7 +10,7 @@ from collections import namedtuple
 import dill
 from time import time 
 
-OUTPUT_RESULTS_DIR = "../logs"
+OUTPUT_RESULTS_DIR = "../logs/IRL"
 ENVIRONMENT = 'CartPole-v0'
 # ENVIRONMENT = 'InvertedPendulum-v2'
 
@@ -18,7 +18,8 @@ ENVIRONMENT = 'CartPole-v0'
 TIMESTAMP = 'RESULTS'
 # Hyperparameter
 #Best found : num_bins_per_observation = 12 ; select_observations = lambda O: np.array([O[1],O[2],O[3]])
-num_bins_per_observation = 6																																																																												 # Could try different number of bins for the different dimensions
+num_bins_per_observation = 6																																																																											 # Could try different number of bins for the different dimensions
+
 
 SUMMARY_DIR = os.path.join(OUTPUT_RESULTS_DIR, "ValueIteration-number_bins_"+str(num_bins_per_observation),\
 							 ENVIRONMENT, TIMESTAMP)
@@ -171,7 +172,7 @@ def run_value_iteration(state_values, state_transition_probabilities, state_rewa
 ###################################################################################################
 
 maxtval = 100000
-eps     = 1.0
+eps     = 0.0
 mineps  = 0.2
 gamma   = 0.99	
 episode_rewards = []
@@ -180,7 +181,7 @@ Train = True
 
 
 if Train:
-	for i_episode in range(500):
+	for i_episode in range(100):
 		current_observation = env.reset()
 		current_observation = select_observations(current_observation)
 		current_state = observation_to_state(current_observation)
@@ -238,15 +239,15 @@ if Train:
 	np.save(os.path.join(SUMMARY_DIR, 'state_transition_probabilities.npy') , state_transition_probabilities)
 
 
-episode_rewards = moving_average(episode_rewards, n = 50)
-episode_rewards[0] = mean_reward[30]
-plt.plot(episode_rewards)
-plt.plot(mean_reward[30:])
-plt.title('Value Iteration Reward Convergence for 5 Bins')
-plt.legend(['Episode reward with smoothening widow of n = 25', 'Mean episode reward'])
-plt.ylabel('Reward')
-plt.xlabel('Iteration')
-plt.show()
+	episode_rewards = moving_average(episode_rewards, n = 50)
+	episode_rewards[0] = mean_reward[30]
+	plt.plot(episode_rewards)
+	plt.plot(mean_reward[30:])
+	plt.title('Value Iteration Reward Convergence for 5 Bins')
+	plt.legend(['Episode reward with smoothening widow of n = 25', 'Mean episode reward'])
+	plt.ylabel('Reward')
+	plt.xlabel('Iteration')
+	plt.show()
 
 else:
 
@@ -311,22 +312,27 @@ def generate_demonstrations(n_trajs=10, len_traj=500):
   	current_state = observation_to_state(current_observation)
   	action = pick_best_action(current_state,state_values,state_transition_probabilities)
   	next_state, reward, is_done,info = env.step(action)
-  	episode.append(Step(cur_state=current_state, action=action, next_state=observation_to_state(select_observations(next_state)), reward=reward, done=is_done))
+  	#episode.append(namedtuple(cur_state=current_state, action=action, next_state=observation_to_state(select_observations(next_state)), reward=reward, done=is_done))
+  	episode.append(tuple([current_state,action,observation_to_state(select_observations(next_state)),reward,is_done]))
   	for _ in range(len_traj):
   		current_observation = select_observations(next_state)
   		current_state = observation_to_state(current_observation)
   		action = pick_best_action(current_state,state_values,state_transition_probabilities)
   		next_state, reward, is_done,info = env.step(action)
-  		episode.append(Step(cur_state=current_state, action=action, next_state=observation_to_state(select_observations(next_state)), reward=reward, done=is_done))
+  		episode.append(tuple([current_state,action,observation_to_state(select_observations(next_state)),reward,is_done]))
+  		#episode.append(namedtuple(cur_state=current_state, action=action, next_state=observation_to_state(select_observations(next_state)), reward=reward, done=is_done))
   		if is_done:
   			break
-  		trajs.append(episode)
+  	trajs.append(episode)
   return trajs
 
-path = "/home/hari/Acads/RL/IRL/cartpole_irl/"
-filename = "ARGS_max_entropy.txt"
+path = "/home/hari/Github_repo/Dynamic-Programming-and-Reinforcement-Learning/FinalProject/logs/IRL/Max_entropy/"
+#filename = "ARGS_max_entropy.txt"
 
-file = open(path+filename,"wb")
-args = [state_transition_probabilities,generate_demonstrations(),state_rewards]
-pickle.dump(args,file,protocol=2)
-file.close()
+#file = open(path+filename,"wb")
+np.save(path+'Trans_prob',state_transition_probabilities)
+np.save(path+'Trajs',generate_demonstrations(),allow_pickle=True)
+np.save(path+'Rewards_Gt',state_rewards)
+#args = [state_transition_probabilities,generate_demonstrations(),state_rewards]
+#pickle.dump(args,file,protocol=2)
+#file.close()

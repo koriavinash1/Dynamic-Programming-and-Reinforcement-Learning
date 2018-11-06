@@ -11,46 +11,13 @@ By Yiren Lu (luyirenmax@gmail.com), May 2017
 '''
 #from __future__ import print_function
 import numpy as np
-import mdp.gridworld as gridworld
-import mdp.value_iteration as value_iteration
+#import mdp.gridworld as gridworld
+#import mdp.value_iteration as value_iteration
 import img_utils
 from utils import *
 import dill
 import pickle
 import gym
-
-def generate_demonstrations(seed,gw, policy, n_trajs=100, len_traj=50):
-  """gatheres expert demonstrations
-
-  inputs:
-  gw          Gridworld - the environment
-  policy      Nx1 matrix
-  n_trajs     int - number of trajectories to generate
-  rand_start  bool - randomly picking start position or not
-  start_pos   2x1 list - set start position, default [0,0]
-  returns:
-  trajs       a list of trajectories - each element in the list is a list of Steps representing an episode
-  """
-  env = gym.make("CartPole-v0")
-  env._max_episode_steps = 100000
-  env.seed(seed)
-
-  trajs = []
-  for i in range(n_trajs):
-
-    episode = []
-    obs = env.reset()    
-    cur_state = start_pos
-    cur_state, action, next_state, reward, is_done = gw.step(int(policy[gw.pos2idx(cur_state)]))
-    episode.append(Step(cur_state=gw.pos2idx(cur_state), action=action, next_state=gw.pos2idx(next_state), reward=reward, done=is_done))
-    # while not is_done:
-    for _ in range(len_traj):
-        cur_state, action, next_state, reward, is_done = gw.step(int(policy[gw.pos2idx(cur_state)]))
-        episode.append(Step(cur_state=gw.pos2idx(cur_state), action=action, next_state=gw.pos2idx(next_state), reward=reward, done=is_done))
-        if is_done:
-            break
-    trajs.append(episode)
-  return trajs
 
 def compute_state_visition_freq(P_a, gamma, trajs, policy, deterministic=True):
   """compute the expected states visition frequency p(s| theta, T) 
@@ -87,7 +54,7 @@ def compute_state_visition_freq(P_a, gamma, trajs, policy, deterministic=True):
 
 
 
-def maxent_irl(feat_map, P_a, gamma, trajs, lr, n_iters):
+def maxent_irl(feat_map, P_a, gamma, trajs, lr=0.1, n_iters=50):
   """
   Maximum Entropy Inverse Reinforcement Learning (Maxent IRL)
 
@@ -141,22 +108,33 @@ def maxent_irl(feat_map, P_a, gamma, trajs, lr, n_iters):
   # return sigmoid(normalize(rewards))
   return normalize(rewards)
 
+def conv_trajs_to_reqd_format(trajs):
+  #temp_episodes = []
+  temp_trajs = []
+  Step = namedtuple('Step','cur_state action next_state reward done')
+  for episode in trajs:
+    temp_episodes = []
+    for each_tuple in episode:
+      temp_episodes.append(Step(cur_state=each_tuple[0], action=each_tuple[1], next_state=each_tuple[2], reward=each_tuple[3], done=each_tuple[4]))
+    temp_trajs.append(temp_episodes)
+  return(temp_trajs)
+
+
+
+
 if __name__ == "__main__":
-	#feat_map = np.eye()
-	seed = 1 
-	file_name = "ARGS_max_entropy.txt" #"ARGS.txt"
-	file = open(file_name,"r")
-	args = pickle.load(file)
-	# print(args)
-	#print "No: of states",np.shape(args[0]))
-	P_s = args[0]; trajs = args[1] ;
-	shape_Ps = np.shape(P_s)
-	print(shape_Ps)
-	feat_map = np.eye(shape_Ps[0])
-	try:
-	   gamma = args[2];lr = args[3]; n_iters = args[4]
-	   norm_rewards = maxent_irl(feat_map, P_a, gamma, trajs, lr, n_iters)
-	except Exception as e:
-	   #Actual rewards saved as args[2]
-	   #rewards = lp_irl(P_s,policy)	
-	   norm_rewards = maxent_irl(feat_map, P_a)
+  seed = 1
+  path = "/home/hari/Github_repo/Dynamic-Programming-and-Reinforcement-Learning/FinalProject/logs/IRL/Max_entropy/"
+  P_s=np.load(path+'Trans_prob.npy')
+  trajs = np.load(path+'Trajs.npy')
+  rew = np.load(path+'Rewards_Gt.npy')
+  trajs = conv_trajs_to_reqd_format(trajs)
+  #P_s = args[0]; trajs = args[1] ;
+  shape_Ps = np.shape(P_s)
+  print(shape_Ps)
+  feat_map = np.eye(shape_Ps[0])
+  try:
+    gamma = args[2];lr = args[3]; n_iters = args[4]
+    norm_rewards = maxent_irl(feat_map, P_s, gamma, trajs, lr, n_iters)
+  except Exception as e:
+    norm_rewards = maxent_irl(feat_map, P_s,0.9,trajs)
