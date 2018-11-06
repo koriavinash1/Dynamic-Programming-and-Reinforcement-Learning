@@ -6,6 +6,8 @@ import gym
 import os
 from gym import wrappers
 import pickle
+from collections import namedtuple
+import dill
 from time import time 
 
 OUTPUT_RESULTS_DIR = "../logs"
@@ -15,7 +17,8 @@ ENVIRONMENT = 'CartPole-v0'
 # TIMESTAMP = datetime.now().strftime("%Y%m%d-%H%M%S")
 TIMESTAMP = 'RESULTS'
 # Hyperparameter
-num_bins_per_observation = 7																																																																												 # Could try different number of bins for the different dimensions
+#Best found : num_bins_per_observation = 12 ; select_observations = lambda O: np.array([O[1],O[2],O[3]])
+num_bins_per_observation = 6																																																																												 # Could try different number of bins for the different dimensions
 
 SUMMARY_DIR = os.path.join(OUTPUT_RESULTS_DIR, "ValueIteration-number_bins_"+str(num_bins_per_observation),\
 							 ENVIRONMENT, TIMESTAMP)
@@ -30,8 +33,7 @@ env = wrappers.Monitor(env, os.path.join(SUMMARY_DIR, ENVIRONMENT), force=True, 
 # env.unwrapped()
 env.seed(1)
 
-select_observations = lambda O: np.array([O[1], O[2], O[3]])
-
+select_observations = lambda O: np.array([O[1],O[2],O[3]])
 observation = env.reset()
 observation = select_observations(observation)
 
@@ -89,8 +91,7 @@ def observation_to_state(observation):
 	for observation_dimension in range(observation_dimensions):
 		state = state + np.digitize(observation[observation_dimension],\
 				observation_dimension_bins[observation_dimension])*\
-				num_bins_per_observation**observation_dimension
-	
+				num_bins_per_observation**observation_dimension	
 	return state
   
 print("[INFO]: Min State: {} Max State: {} Num States: {}".format(observation_to_state([-5,-5,-5,-5.5]), \
@@ -202,8 +203,6 @@ if Train:
 			state_transition_counters[old_state, current_state, action] += 1
 
 			episode_reward = episode_reward + reward        
-			# state_rewards[current_state] = 0.5
-
 			st_time = time()
 			if done or t == maxtval-1:
 				episode_rewards.append(episode_reward)
@@ -272,20 +271,62 @@ else:
 	print ("[INFO] Final evaluation reward: {}".format(episode_reward))
 	env.close()
 
+## Code to write details for LP IRL
+
+# print("Writing File ....")
+# policy = np.array([pick_best_action(i,state_values,state_transition_probabilities) for i in range(num_states)])
+# print(policy[1:10])
+# path = "/home/hari/Acads/RL/IRL/cartpole_irl/"
+# filename = "ARGS1.txt"
+# file = open(path+filename,"wb")
+# args = [state_transition_probabilities,policy,state_rewards]
+# pickle.dump(args,file,protocol=2)
+# file.close()
 
 
-##########################################################################
-#                         IRL Arguments                                  #
-##########################################################################
+## Code to write details for Maxent_IRL
 
-print("Writing File ....")
-policy = np.array([pick_best_action(i,state_values,state_transition_probabilities) for i in range(num_states)])
-print(policy[1:10])
+print("Writing File...")
 
+def generate_demonstrations(n_trajs=10, len_traj=500):
 
-path = "../logs/IRL/"
-filename = "ARGS1.txt"
+  """gatheres expert demonstrations
+
+  inputs:
+  gw          Gridworld - the environment
+  policy      Nx1 matrix
+  n_trajs     int - number of trajectories to generate
+  rand_start  bool - randomly picking start position or not
+  start_pos   2x1 list - set start position, default [0,0]
+  returns:
+  trajs       a list of trajectories - each element in the list is a list of Steps representing an episode
+  """
+  Step = namedtuple('Step','cur_state action next_state reward done')
+  Step.__module__ = '__main__'
+  trajs = []
+  for i in range(n_trajs):
+  	episode = []
+  	current_observation = env.reset() 
+  	current_observation = select_observations(current_observation)
+  	current_state = observation_to_state(current_observation)
+  	action = pick_best_action(current_state,state_values,state_transition_probabilities)
+  	next_state, reward, is_done,info = env.step(action)
+  	episode.append(Step(cur_state=current_state, action=action, next_state=observation_to_state(select_observations(next_state)), reward=reward, done=is_done))
+  	for _ in range(len_traj):
+  		current_observation = select_observations(next_state)
+  		current_state = observation_to_state(current_observation)
+  		action = pick_best_action(current_state,state_values,state_transition_probabilities)
+  		next_state, reward, is_done,info = env.step(action)
+  		episode.append(Step(cur_state=current_state, action=action, next_state=observation_to_state(select_observations(next_state)), reward=reward, done=is_done))
+  		if is_done:
+  			break
+  		trajs.append(episode)
+  return trajs
+
+path = "/home/hari/Acads/RL/IRL/cartpole_irl/"
+filename = "ARGS_max_entropy.txt"
+
 file = open(path+filename,"wb")
-args = [state_transition_probabilities,policy,state_rewards]
+args = [state_transition_probabilities,generate_demonstrations(),state_rewards]
 pickle.dump(args,file,protocol=2)
 file.close()
