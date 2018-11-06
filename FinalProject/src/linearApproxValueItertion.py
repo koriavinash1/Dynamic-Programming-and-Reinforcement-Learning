@@ -10,13 +10,13 @@ import matplotlib.pyplot as plt
 from gym import wrappers
 import tensorflow as tf
 
-NUM_EPISODES = 1000
-MAX_T = 1000
+NUM_EPISODES = 5000
+MAX_T = 10000
 GAMMA = 0.99
 LEARNING_RATE = 0.001
 EXPLORATION_RATE = 1.0
 EXPLORATION_RATE_DECAY = 0.010
-MIN_EXPLORATION_RATE = 0.1
+MIN_EXPLORATION_RATE = 0
 LAMBDA = 0.01
 
 
@@ -41,8 +41,19 @@ NUM_OBS = env.observation_space.shape[0]
 ######################################################################
 
 session = tf.Session()
-state_ = tf.placeholder("float", [None, NUM_OBS])
-targets = tf.placeholder("float", [None, NUM_ACTIONS])
+state_ = tf.placeholder(tf.float32, [None, NUM_OBS])
+targets = tf.placeholder(tf.float32, [None, NUM_ACTIONS])
+
+# with tf.name_scope("fc1"):
+# 		fc1 = tf.contrib.layers.fully_connected(inputs = state_,
+# 												num_outputs = 400,
+# 												activation_fn=tf.nn.relu,
+# 												weights_initializer=tf.contrib.layers.xavier_initializer())
+# with tf.name_scope("output"):
+# 		output = tf.contrib.layers.fully_connected(inputs = fc1,
+# 												num_outputs = NUM_ACTIONS,
+# 												activation_fn=tf.nn.softmax,
+# 												weights_initializer=tf.contrib.layers.xavier_initializer())
 
 
 hidden_weights = tf.Variable(tf.random_uniform(shape=[NUM_OBS, NUM_ACTIONS], dtype=tf.float32))
@@ -61,7 +72,7 @@ session.run(tf.initialize_all_variables())
 
 STOP_TRAIN = False
 DEBUG_MODE = False
-Train = True
+Train = False
 avg = 0
 
 # to store samples for training
@@ -96,13 +107,13 @@ def update(state, state_prime, r):
 	reward = get_reward(state, on = False)[0]
 	reward_prime = get_reward(state_prime, on = False)[0]
 
-	v_prime = max(reward_prime)
+	q_prime = max(reward_prime)
 	action_prime = np.argmax(reward_prime)
 
 	retval = []
 	for i in range(NUM_ACTIONS):
 		if i==action_prime:
-			retval.append( r + GAMMA*v_prime )
+			retval.append( r + GAMMA*q_prime )
 		else:
 			retval.append( reward[i] )
 
@@ -160,6 +171,7 @@ if Train:
 
 				score_100[score_ptr] = t
 				score_ptr = (score_ptr+1) % 100
+				env.close()
 				break
 
 			state = state_prime
@@ -177,7 +189,6 @@ if Train:
 			print("EXPLORATION_RATE:", EXPLORATION_RATE)
 			print("Average of 100:", episode_reward)
 			print("Max reward so far: ", max(episode_rewards))
-			print (session.run(hidden_weights))
 			print ("\n")
 			avg = 0
 

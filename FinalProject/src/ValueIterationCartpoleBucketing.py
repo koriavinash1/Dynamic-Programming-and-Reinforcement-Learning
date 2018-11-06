@@ -175,7 +175,7 @@ mineps  = 0.2
 gamma   = 0.99	
 episode_rewards = []
 mean_reward = []
-Train = True
+Train = False
 
 
 if Train:
