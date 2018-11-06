@@ -220,13 +220,13 @@ if Train:
                 # state_rewards[current_state] = (-1 if(t < 95) else +1)
                 # state_rewards[current_state] = (-1 if(t < maxtval - 100) else +1)
                 # state_rewards[current_state] = (-1*maxtval/(t+1) if(t < maxtval) else +1)
-                state_rewards[current_state] = t
-                # if t<195:
-                #   state_rewards[current_state] = -1
-                # elif t<300:
-                #   state_rewards[current_state] = 1 
-                # else:
-                #   state_rewards[current_state] =2
+                # state_rewards[current_state] = t
+                if t<195:
+                  state_rewards[current_state] = -1
+                elif t<300:
+                  state_rewards[current_state] = 1 
+                else:
+                  state_rewards[current_state] =2
 
                 state_transition_probabilities = \
                     update_state_transition_probabilities_from_counters(state_transition_probabilities,\
