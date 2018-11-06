@@ -12,13 +12,13 @@ By Yiren Lu (luyirenmax@gmail.com), May 2017
 #from __future__ import print_function
 import numpy as np
 #import mdp.gridworld as gridworld
-#import mdp.value_iteration as value_iteration
+import ValueIteration as value_iteration
 import img_utils
 from utils import *
 import dill
 import pickle
 import gym
-
+import matplotlib.pyplot as plt
 def compute_state_visition_freq(P_a, gamma, trajs, policy, deterministic=True):
   """compute the expected states visition frequency p(s| theta, T) 
   using dynamic programming
@@ -39,11 +39,13 @@ def compute_state_visition_freq(P_a, gamma, trajs, policy, deterministic=True):
   # mu[s, t] is the prob of visiting state s at time t
   mu = np.zeros([N_STATES, T]) 
 
-  for traj in trajs:
-    mu[traj[0].cur_state, 0] += 1
+  for traj in trajs:    
+    # print("Loop Entered .....")     
+    mu[int(traj[0].cur_state), 0] += 1
   mu[:,0] = mu[:,0]/len(trajs)
 
   for s in range(N_STATES):
+    # print("N_states .....",s)
     for t in range(T-1):
       if deterministic:
         mu[s, t+1] = sum([mu[pre_s, t]*P_a[pre_s, s, int(policy[pre_s])] for pre_s in range(N_STATES)])
@@ -80,7 +82,7 @@ def maxent_irl(feat_map, P_a, gamma, trajs, lr=0.1, n_iters=50):
   feat_exp = np.zeros([feat_map.shape[1]])
   for episode in trajs:
     for step in episode:
-      feat_exp += feat_map[step.cur_state,:]
+      feat_exp += feat_map[int(step.cur_state),:]
   feat_exp = feat_exp/len(trajs)
 
   # training
@@ -124,7 +126,7 @@ def conv_trajs_to_reqd_format(trajs):
 
 if __name__ == "__main__":
   seed = 1
-  path = "/home/hari/Github_repo/Dynamic-Programming-and-Reinforcement-Learning/FinalProject/logs/IRL/Max_entropy/"
+  path = "../logs/IRL/Max_entropy/"
   P_s=np.load(path+'Trans_prob.npy')
   trajs = np.load(path+'Trajs.npy')
   rew = np.load(path+'Rewards_Gt.npy')
@@ -138,3 +140,8 @@ if __name__ == "__main__":
     norm_rewards = maxent_irl(feat_map, P_s, gamma, trajs, lr, n_iters)
   except Exception as e:
     norm_rewards = maxent_irl(feat_map, P_s,0.9,trajs)
+
+  plt.plot(norm_rewards, 'r')
+  plt.plot(rew, 'b')
+  plt.legend(['true', 'gt'])
+  plt.show()
