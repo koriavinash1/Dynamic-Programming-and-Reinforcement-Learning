@@ -10,6 +10,18 @@ from collections import namedtuple
 import dill
 from time import time 
 
+
+NUM_EPISODES = 5000
+MAX_T = 10000
+GAMMA   = 0.99  
+EXPLORATION_RATE     = 1.0
+MIN_EXPLORATION_RATE  = 0.2
+EXPLORATION_RATE_DECAY = 0.010
+episode_rewards = []
+mean_reward = []
+Train = True
+
+
 OUTPUT_RESULTS_DIR = "../logs"
 ENVIRONMENT = 'CartPole-v0'
 # ENVIRONMENT = 'InvertedPendulum-v2'
@@ -142,7 +154,7 @@ def update_state_transition_probabilities_from_counters(probabilities, counters)
 
 
 def run_value_iteration(state_values, state_transition_probabilities, state_rewards):
-    gamma = 0.9
+    GAMMA = 0.9
     convergence_tolerance = 1e-6
     iteration = 0
     max_dif = np.Inf
@@ -156,7 +168,7 @@ def run_value_iteration(state_values, state_transition_probabilities, state_rewa
             best_action_values = np.maximum(best_action_values,\
                         state_transition_probabilities[:,:,a_i].dot(state_values))
 
-        state_values = state_rewards + gamma * best_action_values
+        state_values = state_rewards + GAMMA * best_action_values
         max_dif = np.max(np.abs(state_values - old_state_values))       
         
         # print("[INFO ValueIteration]============================")
@@ -170,28 +182,20 @@ def run_value_iteration(state_values, state_transition_probabilities, state_rewa
 #                                        iterate loops                                            #
 ###################################################################################################
 
-maxtval = 10000
-eps     = 1.0
-mineps  = 0.2
-gamma   = 0.99  
-episode_rewards = []
-mean_reward = []
-Train = True
-
 
 if Train:
-    for i_episode in range(50000):
+    for i_episode in range(NUM_EPISODES):
         current_observation = env.reset()
         current_observation = select_observations(current_observation)
         current_state = observation_to_state(current_observation)
 
         episode_reward = 0
         env.render()
-        if i_episode % 50 == 49: eps = max(mineps, eps * 0.1)
+        if i_episode % 50 == 49: EXPLORATION_RATE = max(MIN_EXPLORATION_RATE, EXPLORATION_RATE * 0.1)
 
-        if np.random.uniform() <= eps: current_state = np.random.randint(0, num_states, 1)
+        if np.random.uniform() <= EXPLORATION_RATE: current_state = np.random.randint(0, num_states, 1)
 
-        for t in range(maxtval):
+        for t in range(MAX_T):
             action = pick_best_action(current_state, state_values, state_transition_probabilities)
 
             old_state = current_state
@@ -206,7 +210,7 @@ if Train:
             st_time = time()
             if not done:
                 state_rewards[current_state] = 0.1            
-            elif done or t == maxtval-1:
+            elif done or t == MAX_T-1:
                 episode_rewards.append(episode_reward)
                 mean_reward.append(np.mean(episode_rewards))
                 print("[INFO Data {}]============================".format(t))
@@ -218,12 +222,12 @@ if Train:
                 
                 # Average length of episode is > 195, anything less than than 195 has -ve reward
                 # state_rewards[current_state] = (-1 if(t < 95) else +1)
-                # state_rewards[current_state] = (-1 if(t < maxtval - 100) else +1)
-                # state_rewards[current_state] = (-1*maxtval/(t+1) if(t < maxtval) else +1)
+                # state_rewards[current_state] = (-1 if(t < MAX_T - 100) else +1)
+                # state_rewards[current_state] = (-1*MAX_T/(t+1) if(t < MAX_T) else +1)
                 # state_rewards[current_state] = t
-                if t<195:
+                if t < 195:
                   state_rewards[current_state] = -1
-                elif t<300:
+                elif t < 300:
                   state_rewards[current_state] = 1 
                 else:
                   state_rewards[current_state] =2
