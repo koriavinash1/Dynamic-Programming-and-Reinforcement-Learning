@@ -22,7 +22,7 @@ mean_reward = []
 Train = True
 
 
-OUTPUT_RESULTS_DIR = "../logs"
+OUTPUT_RESULTS_DIR = "../logs/IRL"
 ENVIRONMENT = 'CartPole-v0'
 # ENVIRONMENT = 'InvertedPendulum-v2'
 
@@ -300,47 +300,53 @@ else:
 
 ## Code to write details for Maxent_IRL
 
-# print("Writing File...")
 
-# def generate_demonstrations(n_trajs=10, len_traj=500):
+print("Writing File...")
 
-#   """gatheres expert demonstrations
+def generate_demonstrations(n_trajs=10, len_traj=500):
 
-#   inputs:
-#   gw          Gridworld - the environment
-#   policy      Nx1 matrix
-#   n_trajs     int - number of trajectories to generate
-#   rand_start  bool - randomly picking start position or not
-#   start_pos   2x1 list - set start position, default [0,0]
-#   returns:
-#   trajs       a list of trajectories - each element in the list is a list of Steps representing an episode
-#   """
-#   Step = namedtuple('Step','cur_state action next_state reward done')
-#   Step.__module__ = '__main__'
-#   trajs = []
-#   for i in range(n_trajs):
-#     episode = []
-#     current_observation = env.reset() 
-#     current_observation = select_observations(current_observation)
-#     current_state = observation_to_state(current_observation)
-#     action = pick_best_action(current_state,state_values,state_transition_probabilities)
-#     next_state, reward, is_done,info = env.step(action)
-#     episode.append(Step(cur_state=current_state, action=action, next_state=observation_to_state(select_observations(next_state)), reward=reward, done=is_done))
-#     for _ in range(len_traj):
-#         current_observation = select_observations(next_state)
-#         current_state = observation_to_state(current_observation)
-#         action = pick_best_action(current_state,state_values,state_transition_probabilities)
-#         next_state, reward, is_done,info = env.step(action)
-#         episode.append(Step(cur_state=current_state, action=action, next_state=observation_to_state(select_observations(next_state)), reward=reward, done=is_done))
-#         if is_done:
-#             break
-#         trajs.append(episode)
-#   return trajs
+  """gatheres expert demonstrations
 
-# path = "/home/hari/Acads/RL/IRL/cartpole_irl/"
-# filename = "ARGS_max_entropy.txt"
+  inputs:
+  gw          Gridworld - the environment
+  policy      Nx1 matrix
+  n_trajs     int - number of trajectories to generate
+  rand_start  bool - randomly picking start position or not
+  start_pos   2x1 list - set start position, default [0,0]
+  returns:
+  trajs       a list of trajectories - each element in the list is a list of Steps representing an episode
+  """
+  Step = namedtuple('Step','cur_state action next_state reward done')
+  Step.__module__ = '__main__'
+  trajs = []
+  for i in range(n_trajs):
+  	episode = []
+  	current_observation = env.reset() 
+  	current_observation = select_observations(current_observation)
+  	current_state = observation_to_state(current_observation)
+  	action = pick_best_action(current_state,state_values,state_transition_probabilities)
+  	next_state, reward, is_done,info = env.step(action)
+  	#episode.append(namedtuple(cur_state=current_state, action=action, next_state=observation_to_state(select_observations(next_state)), reward=reward, done=is_done))
+  	episode.append(tuple([current_state,action,observation_to_state(select_observations(next_state)),reward,is_done]))
+  	for _ in range(len_traj):
+  		current_observation = select_observations(next_state)
+  		current_state = observation_to_state(current_observation)
+  		action = pick_best_action(current_state,state_values,state_transition_probabilities)
+  		next_state, reward, is_done,info = env.step(action)
+  		episode.append(tuple([current_state,action,observation_to_state(select_observations(next_state)),reward,is_done]))
+  		#episode.append(namedtuple(cur_state=current_state, action=action, next_state=observation_to_state(select_observations(next_state)), reward=reward, done=is_done))
+  		if is_done:
+  			break
+  	trajs.append(episode)
+  return trajs
 
-# file = open(path+filename,"wb")
-# args = [state_transition_probabilities,generate_demonstrations(),state_rewards]
-# pickle.dump(args,file,protocol=2)
-# file.close()
+path = "/home/hari/Github_repo/Dynamic-Programming-and-Reinforcement-Learning/FinalProject/logs/IRL/Max_entropy/"
+#filename = "ARGS_max_entropy.txt"
+
+#file = open(path+filename,"wb")
+np.save(path+'Trans_prob',state_transition_probabilities)
+np.save(path+'Trajs',generate_demonstrations(),allow_pickle=True)
+np.save(path+'Rewards_Gt',state_rewards)
+#args = [state_transition_probabilities,generate_demonstrations(),state_rewards]
+#pickle.dump(args,file,protocol=2)
+#file.close()

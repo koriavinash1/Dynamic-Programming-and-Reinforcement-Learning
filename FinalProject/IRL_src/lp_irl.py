@@ -81,8 +81,9 @@ def lp_irl(trans_probs, policy, gamma=0.5, l1=10, R_max=10):
   return rewards
 
 if __name__ == "__main__":
+  path = "/home/hari/Github_repo/Dynamic-Programming-and-Reinforcement-Learning/FinalProject/logs/IRL/"
   file_name = "ARGS1.txt" #"ARGS.txt"
-  file = open(file_name,"r")
+  file = open(path+file_name,"r")
   args = pickle.load(file)
   # print(args)
   print("No: of states",np.shape(args[0]))
