@@ -6,7 +6,7 @@ from collections import namedtuple
 
 import img_utils
 # from mdp import gridworld
-from mdp import value_iteration
+import ValueIteration as value_iteration
 from deep_maxent_irl import *
 from maxent_irl import *
 from utils import *
@@ -109,10 +109,10 @@ def main():
   print(trajs[1])
   print 'LP IRL training ..'
   rewards_lpirl = lp_irl(P_a, policy_gt, gamma=0.3, l1=10, R_max=R_MAX)
-  # print 'Max Ent IRL training ..'
-  # rewards_maxent = maxent_irl(feat_map, P_a, GAMMA, trajs, LEARNING_RATE*2, N_ITERS*2)
-  # print 'Deep Max Ent IRL training ..'
-  # rewards = deep_maxent_irl(feat_map, P_a, GAMMA, trajs, LEARNING_RATE, N_ITERS)
+  print 'Max Ent IRL training ..'
+  rewards_maxent = maxent_irl(feat_map, P_a, GAMMA, trajs, LEARNING_RATE*2, N_ITERS*2)
+  print 'Deep Max Ent IRL training ..'
+  rewards = deep_maxent_irl(feat_map, P_a, GAMMA, trajs, LEARNING_RATE, N_ITERS)
 
   # plots
   plt.figure(figsize=(20,4))
@@ -120,10 +120,10 @@ def main():
   img_utils.heatmap2d(np.reshape(rewards_gt, (H,W), order='F'), 'Rewards Map - Ground Truth', block=False)
   plt.subplot(1, 4, 2)
   img_utils.heatmap2d(np.reshape(rewards_lpirl, (H,W), order='F'), 'Reward Map - LP', block=False)
-  # plt.subplot(1, 4, 3)
-  # img_utils.heatmap2d(np.reshape(rewards_maxent, (H,W), order='F'), 'Reward Map - Maxent', block=False)
-  # plt.subplot(1, 4, 4)
-  # img_utils.heatmap2d(np.reshape(rewards, (H,W), order='F'), 'Reward Map - Deep Maxent', block=False)
+  plt.subplot(1, 4, 3)
+  img_utils.heatmap2d(np.reshape(rewards_maxent, (H,W), order='F'), 'Reward Map - Maxent', block=False)
+  plt.subplot(1, 4, 4)
+  img_utils.heatmap2d(np.reshape(rewards, (H,W), order='F'), 'Reward Map - Deep Maxent', block=False)
   plt.show()
   file = open('ARGS.txt',"w")
   args = [ P_a,policy_gt,0.3,10,R_MAX]
