@@ -76,23 +76,12 @@ def update_state_transition_probabilities_from_counters(probabilities, counters)
 
 
 
-def run_value_iteration(state_values, state_transition_probabilities, state_rewards):
-	convergence_tolerance = 1e-6
-	iteration = 0
-	max_dif = np.Inf
-	while max_dif > convergence_tolerance:  
-		iteration = iteration + 1
-		old_state_values = np.copy(state_values)
+def run_policy_iteration(state_values, state_transition_probabilities, state_rewards):
+	def policy_evaluation():
+		pass
 
-		best_action_values = np.zeros((num_states)) - np.Inf
-
-		for a_i in range(num_actions):
-			best_action_values = np.maximum(best_action_values,\
-					state_transition_probabilities[:,:,a_i].dot(state_values))
-
-		state_values = state_rewards + GAMMA * best_action_values
-		max_dif = np.max(np.abs(state_values - old_state_values))       
-		
+	def policy_update():
+		pass
 	return state_values
 		
 
@@ -143,7 +132,7 @@ if __name__ == "__main__":
 	import argparse
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--env_name', type=str, default='CartPole-v0')
-	parser.add_argument('--exp_name', type=str, default='ValueIteration')
+	parser.add_argument('--exp_name', type=str, default='PolicyIteration')
 	parser.add_argument('--num_episodes', type=int, default=150)
 	parser.add_argument('--max_episode_len', type=int, default=10000)
 	parser.add_argument('--max_episode_steps', type=int, default=10000)
