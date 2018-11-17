@@ -1,4 +1,3 @@
-# Finite-state MDP solved using Value Iteration
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,6 +9,7 @@ from collections import namedtuple
 import dill
 from time import time 
 from datetime import datetime
+from tqdm import tqdm
 
 select_observations = lambda O: np.array([O[1],O[2],O[3]])
 ###################################################################################################
@@ -155,6 +155,7 @@ if __name__ == "__main__":
 	parser.add_argument('--num_bins', type=int, default=4)
 	parser.add_argument('--log_dir', type=str, default="../logs/")
 	parser.add_argument('--train', type=bool, default=True)
+	parser.add_argument('--verbose', type=int, default=1)
 	args = parser.parse_args()
 
 	print ("[INFO] ", args)
@@ -237,7 +238,7 @@ if __name__ == "__main__":
 
 
 	if Train:
-		for i_episode in range(NUM_EPISODES):
+		for i_episode in tqdm(range(NUM_EPISODES)):
 			current_observation = env.reset()
 			current_observation = select_observations(current_observation)
 			current_state = observation_to_state(current_observation)
@@ -266,24 +267,20 @@ if __name__ == "__main__":
 				elif done or t == MAX_T-1:
 					episode_rewards.append(episode_reward)
 					mean_reward.append(np.mean(episode_rewards))
-					print("[INFO Data {}]============================".format(t))
-					print("Episode: ", i_episode)
-					print("Reward: ", episode_reward)
-					print("Mean Reward: ", np.mean(episode_rewards))
-					print("Max reward so far: ", max(episode_rewards))
 
-					
-					# Average length of episode is > 195, anything less than than 195 has -ve reward
-					# state_rewards[current_state] = (-1 if(t < 95) else +1)
-					# state_rewards[current_state] = (-1 if(t < MAX_T - 100) else +1)
-					# state_rewards[current_state] = (-1*MAX_T/(t+1) if(t < MAX_T) else +1)
-					# state_rewards[current_state] = t
+					if args.verbose:
+						print("[INFO Data {}]============================".format(t))
+						print("Episode: ", i_episode)
+						print("Reward: ", episode_reward)
+						print("Mean Reward: ", np.mean(episode_rewards))
+						print("Max reward so far: ", max(episode_rewards))
+
 					if t < 195:
 						state_rewards[current_state] = -1
 					elif t < 300:
 						state_rewards[current_state] = 1 
 					else:
-						state_rewards[current_state] =2
+						state_rewards[current_state] = 2
 
 					state_transition_probabilities = \
 						update_state_transition_probabilities_from_counters(state_transition_probabilities,\
@@ -294,19 +291,17 @@ if __name__ == "__main__":
 
 
 			if i_episode % 20 == 19:
-				print(np.sum(state_rewards))
-				print("State Values:",np.sum(state_values))
-				print("[INFO] Model Saved State Rewards: ", state_rewards)
 				np.save(os.path.join(SUMMARY_DIR, 'state_values.npy') , state_values)
 				np.save(os.path.join(SUMMARY_DIR, 'state_rewards.npy') , state_rewards)
 				np.save(os.path.join(SUMMARY_DIR, 'state_transition_probabilities.npy') , state_transition_probabilities)
+				print("[INFO] Model Saved Successfully ... ")
 
 
 		episode_rewards = moving_average(episode_rewards, n = 25)
 		episode_rewards[0] = mean_reward[30]
 		plt.plot(episode_rewards)
 		plt.plot(mean_reward[30:])
-		plt.title('Value Iteration Reward Convergence for'+ str(NUMBER_OF_BINS) +'Bins')
+		plt.title('Value Iteration Reward Convergence for '+ str(NUMBER_OF_BINS) +' Bins')
 		plt.legend(['Episode reward with smoothening widow of n = 25', 'Mean episode reward'])
 		plt.ylabel('Reward')
 		plt.xlabel('Episodes')
@@ -314,7 +309,7 @@ if __name__ == "__main__":
 		
 		plt.clf()
 		plt.plot(episode_rewards)
-		plt.title('Value Iteration Reward Convergence for'+ str(NUMBER_OF_BINS) +'Bins')
+		plt.title('Value Iteration Reward Convergence for '+ str(NUMBER_OF_BINS) +' Bins')
 		plt.legend(['Episode reward with smoothening widow of n = 25'])
 		plt.ylabel('Reward')
 		plt.xlabel('Episodes')
@@ -322,7 +317,7 @@ if __name__ == "__main__":
 		
 		plt.clf()
 		plt.plot(mean_reward[30:])
-		plt.title('Value Iteration Reward Convergence for'+ str(NUMBER_OF_BINS) +'Bins')
+		plt.title('Value Iteration Reward Convergence for '+ str(NUMBER_OF_BINS) +' Bins')
 		plt.legend(['Mean episode reward'])
 		plt.ylabel('Reward')
 		plt.xlabel('Episodes')
