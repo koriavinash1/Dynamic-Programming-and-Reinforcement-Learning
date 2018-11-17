@@ -154,7 +154,7 @@ if __name__ == "__main__":
 	parser.add_argument('--expl_rate_decay', type=float, default=0.010)
 	parser.add_argument('--num_bins', type=int, default=4)
 	parser.add_argument('--log_dir', type=str, default="../logs/")
-	parser.add_argument('--train', type=bool, default=True)
+	parser.add_argument('--train', type=int, default=1)
 	parser.add_argument('--verbose', type=int, default=1)
 	args = parser.parse_args()
 
@@ -238,6 +238,8 @@ if __name__ == "__main__":
 
 
 	if Train:
+		start_time = time()
+
 		for i_episode in tqdm(range(NUM_EPISODES)):
 			current_observation = env.reset()
 			current_observation = select_observations(current_observation)
@@ -297,6 +299,7 @@ if __name__ == "__main__":
 				print("[INFO] Model Saved Successfully ... ")
 
 
+		end_time = time()
 		episode_rewards = moving_average(episode_rewards, n = 25)
 		episode_rewards[0] = mean_reward[30]
 		plt.plot(episode_rewards)
@@ -305,7 +308,8 @@ if __name__ == "__main__":
 		plt.legend(['Episode reward with smoothening widow of n = 25', 'Mean episode reward'])
 		plt.ylabel('Reward')
 		plt.xlabel('Episodes')
-		plt.savefig(os.path.join(SUMMARY_DIR, 'mean_epi_plot.png'))
+		plt.savefig(os.path.join(SUMMARY_DIR, 'mean_epi_plot_training_time_'+\
+							str(end_time - start_time)+'.png'))
 		
 		plt.clf()
 		plt.plot(episode_rewards)
@@ -313,7 +317,8 @@ if __name__ == "__main__":
 		plt.legend(['Episode reward with smoothening widow of n = 25'])
 		plt.ylabel('Reward')
 		plt.xlabel('Episodes')
-		plt.savefig(os.path.join(SUMMARY_DIR, 'epi_plot.png'))
+		plt.savefig(os.path.join(SUMMARY_DIR, 'epi_plot_training_time_'+\
+							str(end_time - start_time)+'.png'))
 		
 		plt.clf()
 		plt.plot(mean_reward[30:])
@@ -321,7 +326,8 @@ if __name__ == "__main__":
 		plt.legend(['Mean episode reward'])
 		plt.ylabel('Reward')
 		plt.xlabel('Episodes')
-		plt.savefig(os.path.join(SUMMARY_DIR, 'mean_plot.png'))
+		plt.savefig(os.path.join(SUMMARY_DIR, 'mean_plot_training_time_'+\
+							str(end_time - start_time)+'.png'))
 		
 
 	else:
