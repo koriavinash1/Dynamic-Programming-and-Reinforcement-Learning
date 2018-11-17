@@ -144,7 +144,7 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--env_name', type=str, default='CartPole-v0')
 	parser.add_argument('--exp_name', type=str, default='ValueIteration')
-	parser.add_argument('--num_episodes', type=int, default=150)
+	parser.add_argument('--num_episodes', type=int, default=50)
 	parser.add_argument('--max_episode_len', type=int, default=10000)
 	parser.add_argument('--max_episode_steps', type=int, default=10000)
 	parser.add_argument('--gamma', type=float, default=0.99)
