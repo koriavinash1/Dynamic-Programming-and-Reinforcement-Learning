@@ -298,7 +298,8 @@ if __name__ == "__main__":
 				if args.verbose: print("[INFO] Model Saved Successfully ... ")
 
 			# terminaltion condition
-			if np.mean(episode_rewards[:-10]) == MAXENVSTEPS: break
+			# print (np.mean(np.array(episode_rewards)[-10:]))
+			if np.mean(np.array(episode_rewards)[-10:]) == MAXENVSTEPS: break
 
 
 		end_time = time()
