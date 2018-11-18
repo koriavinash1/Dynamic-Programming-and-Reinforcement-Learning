@@ -77,12 +77,58 @@ def update_state_transition_probabilities_from_counters(probabilities, counters)
 
 
 def run_policy_iteration(state_values, state_transition_probabilities, state_rewards):
-	def policy_evaluation():
-		pass
+		P =  np.transpose(np.copy(state_transition_probabilities),(0,2,1))
+		beta = 0.995
+		n_states = len(state_values)
+		reward = np.copy(state_rewards)
+		n_actions = 2
+		init_policy = np.zeros(n_states,dtype=int)
+		policy = np.copy(init_policy)
+		iter = 0 
+		while(True):
+			iter+=1
+			#print("Iteration : ",iter)
+			
+			#Policy Evaluation
+			A_mat = np.zeros([n_states,n_states])
+			C_mat = np.zeros([n_states,1])
 
-	def policy_update():
-		pass
-	return state_values
+			if(iter%100==0):
+				print("Iterations:",iter)
+
+			for state in range(n_states):
+				C_mat[state] = np.sum(P[state][policy[state]]*reward[state])
+				A_mat[state] = np.delete(np.insert(np.zeros(n_states),state,1),-1) - beta * P[state][policy[state]]
+
+			J = np.matmul(np.linalg.inv(A_mat),C_mat)
+			
+			#Policy Improvement
+			new_policy = np.zeros(n_states,dtype=int)
+			val_mat = np.zeros(n_actions)
+			opt_vals = np.zeros(n_states)
+
+			for state in range(n_states):
+				for action in range(n_actions):
+					val_mat[action] = np.sum(P[state][action]*(reward[state]+beta * np.reshape(J,[1,n_states])))
+				
+				opt_vals[state] = np.max(val_mat)
+				new_policy[state] = np.argmax(val_mat)
+			
+			#Convergence condition
+			if(np.array_equal(policy,new_policy)):
+				print("Optimal Policy using Policy Iteration : ", new_policy)
+				break
+
+			#Update policy
+			policy = np.copy(new_policy)
+		# return np.round(opt_vals,2),new_policy
+		return opt_vals
+	# def policy_evaluation():
+	# 	pass
+
+	# def policy_update():
+	# 	pass
+		# return state_values
 		
 
 def generate_demonstrations(n_trajs=10, len_traj=500):
@@ -275,7 +321,7 @@ if __name__ == "__main__":
 					state_transition_probabilities = \
 						update_state_transition_probabilities_from_counters(state_transition_probabilities,\
 													state_transition_counters)
-					state_values = run_value_iteration(state_values, state_transition_probabilities, state_rewards)
+					state_values = run_policy_iteration(state_values, state_transition_probabilities, state_rewards)
 					env.close()
 					break
 
