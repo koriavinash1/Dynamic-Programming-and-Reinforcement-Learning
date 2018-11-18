@@ -297,6 +297,9 @@ if __name__ == "__main__":
 				np.save(os.path.join(SUMMARY_DIR, 'state_transition_probabilities.npy') , state_transition_probabilities)
 				print("[INFO] Model Saved Successfully ... ")
 
+			# terminaltion condition
+			if np.mean(episode_rewards[:-10]) == MAXENVSTEPS: break
+
 
 		end_time = time()
 		episode_rewards = moving_average(episode_rewards, n = 25)
