@@ -295,7 +295,7 @@ if __name__ == "__main__":
 				np.save(os.path.join(SUMMARY_DIR, 'state_values.npy') , state_values)
 				np.save(os.path.join(SUMMARY_DIR, 'state_rewards.npy') , state_rewards)
 				np.save(os.path.join(SUMMARY_DIR, 'state_transition_probabilities.npy') , state_transition_probabilities)
-				print("[INFO] Model Saved Successfully ... ")
+				if args.verbose: print("[INFO] Model Saved Successfully ... ")
 
 			# terminaltion condition
 			if np.mean(episode_rewards[:-10]) == MAXENVSTEPS: break
