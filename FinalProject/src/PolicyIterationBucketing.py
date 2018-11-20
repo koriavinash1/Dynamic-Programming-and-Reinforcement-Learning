@@ -78,12 +78,10 @@ def update_state_transition_probabilities_from_counters(probabilities, counters)
 
 def run_policy_iteration(state_values, state_transition_probabilities, state_rewards):
 		P =  np.transpose(np.copy(state_transition_probabilities),(0,2,1))
-		beta = 0.995
 		n_states = len(state_values)
 		reward = np.copy(state_rewards)
-		n_actions = 2
-		init_policy = np.zeros(n_states,dtype=int)
-		policy = np.copy(init_policy)
+		n_actions = P.shape[1]
+		policy = np.zeros(n_states,dtype=int)
 		iter = 0 
 		while(True):
 			iter+=1
@@ -97,9 +95,10 @@ def run_policy_iteration(state_values, state_transition_probabilities, state_rew
 				print("Iterations:",iter)
 
 			for state in range(n_states):
-				C_mat[state] = np.sum(P[state][policy[state]]*reward[state])
-				A_mat[state] = np.delete(np.insert(np.zeros(n_states),state,1),-1) - beta * P[state][policy[state]]
+				# C_mat[state] = np.sum(P[state][policy[state]]*reward[state])
+				A_mat[state] = np.eye(num_states)[state] - GAMMA * P[state][policy[state]]
 
+			C_mat = reward.reshape(n_states, 1)
 			J = np.matmul(np.linalg.inv(A_mat),C_mat)
 			
 			#Policy Improvement
@@ -109,13 +108,14 @@ def run_policy_iteration(state_values, state_transition_probabilities, state_rew
 
 			for state in range(n_states):
 				for action in range(n_actions):
-					val_mat[action] = np.sum(P[state][action]*(reward[state]+beta * np.reshape(J,[1,n_states])))
+					val_mat[action] = np.sum(reward[state]+ GAMMA*P[state][action]*(np.reshape(J,[1,n_states])))
 				
 				opt_vals[state] = np.max(val_mat)
 				new_policy[state] = np.argmax(val_mat)
 			
+			# print (new_policy, policy)
 			#Convergence condition
-			if(np.array_equal(policy,new_policy)):
+			if(np.sum(policy - new_policy) == 0):
 				print("Optimal Policy using Policy Iteration : ", new_policy)
 				break
 
