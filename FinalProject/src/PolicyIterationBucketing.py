@@ -75,60 +75,49 @@ def update_state_transition_probabilities_from_counters(probabilities, counters)
 
 
 
+def run_policy_iteration(state_values, state_transition_probabilities, state_rewards, M = 100):
+	P =  np.transpose(np.copy(state_transition_probabilities),(0,2,1))
+	reward = np.copy(state_rewards)
+	n_states = P.shape[0]
+	n_actions = P.shape[1]
+	policy = np.zeros(n_states,dtype=int)
+	
+	iter = 0 
+	while(True):
+		iter += 1
 
-def run_policy_iteration(state_values, state_transition_probabilities, state_rewards):
-		P =  np.transpose(np.copy(state_transition_probabilities),(0,2,1))
-		n_states = len(state_values)
-		reward = np.copy(state_rewards)
-		n_actions = P.shape[1]
-		policy = np.zeros(n_states,dtype=int)
-		iter = 0 
-		while(True):
-			iter+=1
-			#print("Iteration : ",iter)
-			
-			#Policy Evaluation
-			A_mat = np.zeros([n_states,n_states])
-			C_mat = np.zeros([n_states,1])
+		#Policy Evaluation
+		Ppi = np.zeros([n_states, n_states])
+		for state in range(n_states):
+			Ppi[state, :] = P[state, policy[state], :]
+		
+		if M:
+			Jpi = np.zeros(n_states)
+			for _ in range(M):
+				Jpi = reward + np.max(GAMMA*np.einsum('ijk, k -> ij', P, Jpi))
+		else:
+			Jpi = np.linalg.inv(np.eye(n_states) - GAMMA * Ppi).dot(reward.reshape(n_states, 1))
 
-			if(iter%100==0):
-				print("Iterations:",iter)
+		#Policy Improvement
+		opt_vals = np.zeros(n_states)
+		new_policy = np.zeros(n_states,dtype=int)
 
-			for state in range(n_states):
-				# C_mat[state] = np.sum(P[state][policy[state]]*reward[state])
-				A_mat[state] = np.eye(num_states)[state] - GAMMA * P[state][policy[state]]
-
-			C_mat = reward.reshape(n_states, 1)
-			J = np.matmul(np.linalg.inv(A_mat),C_mat)
-			
-			#Policy Improvement
-			new_policy = np.zeros(n_states,dtype=int)
+		for state in range(n_states):
 			val_mat = np.zeros(n_actions)
-			opt_vals = np.zeros(n_states)
+			for action in range(n_actions):
+				val_mat[action] = reward[state]+ GAMMA*np.sum(P[state][action]*Jpi)
 
-			for state in range(n_states):
-				for action in range(n_actions):
-					val_mat[action] = np.sum(reward[state]+ GAMMA*P[state][action]*(np.reshape(J,[1,n_states])))
-				
-				opt_vals[state] = np.max(val_mat)
-				new_policy[state] = np.argmax(val_mat)
-			
-			# print (new_policy, policy)
-			#Convergence condition
-			if(np.sum(policy - new_policy) == 0):
-				print("Optimal Policy using Policy Iteration : ", new_policy)
-				break
+			opt_vals[state]   = np.max(val_mat)
+			new_policy[state] = np.argmax(val_mat)
+		
+		#Convergence condition
+		if(np.sum(policy - new_policy) == 0 or iter == 500):
+			# print("Optimal Policy using Policy Iteration : new_policy :{}, old_policy: {} ".format(new_policy, policy))
+			break
+		#Update policy
+		policy = np.copy(new_policy)
 
-			#Update policy
-			policy = np.copy(new_policy)
-		# return np.round(opt_vals,2),new_policy
-		return opt_vals
-	# def policy_evaluation():
-	# 	pass
-
-	# def policy_update():
-	# 	pass
-		# return state_values
+	return opt_vals
 		
 
 def generate_demonstrations(n_trajs=10, len_traj=500):
@@ -186,7 +175,9 @@ if __name__ == "__main__":
 	parser.add_argument('--expl_rate', type=float, default=1.0)
 	parser.add_argument('--min_expl_rate', type=float, default=0.2)
 	parser.add_argument('--expl_rate_decay', type=float, default=0.010)
-	parser.add_argument('--num_bins', type=int, default=4)
+	parser.add_argument('--num_bins', type=int, default=7)
+	parser.add_argument('--modified_policy_iteration', type=int, default=500) 
+	parser.add_argument('--policy_iteration_type', type=str, default="Modified") 
 	parser.add_argument('--log_dir', type=str, default="../logs/")
 	parser.add_argument('--train', type=int, default=1)
 	parser.add_argument('--verbose', type=int, default=1)
@@ -207,10 +198,16 @@ if __name__ == "__main__":
 	OUTPUT_RESULTS_DIR     = args.log_dir
 	TIMESTAMP              = datetime.now().strftime("%Y%m%d-%H%M%S")
 	# TIMESTAMP = 'RESULTS'
+	if args.policy_iteration_type == "Modified":
+		M = args.modified_policy_iteration
+	else: 
+		M = None
+		if NUMBER_OF_BINS > 7:
+			raise ValueError("Inverse cann't be calculated, set method to modified policy iteration.")
 	
 	episode_rewards = []
 	mean_reward     = []
-	SUMMARY_DIR     = os.path.join(OUTPUT_RESULTS_DIR,  EXPNAME + "_No_Bins_" + str(NUMBER_OF_BINS),\
+	SUMMARY_DIR     = os.path.join(OUTPUT_RESULTS_DIR,  args.policy_iteration_type + EXPNAME + "_No_Bins_" + str(NUMBER_OF_BINS),\
 										 ENVIRONMENT, TIMESTAMP)
 
 
@@ -321,7 +318,7 @@ if __name__ == "__main__":
 					state_transition_probabilities = \
 						update_state_transition_probabilities_from_counters(state_transition_probabilities,\
 													state_transition_counters)
-					state_values = run_policy_iteration(state_values, state_transition_probabilities, state_rewards)
+					state_values = run_policy_iteration(state_values, state_transition_probabilities, state_rewards, M)
 					env.close()
 					break
 
@@ -331,6 +328,8 @@ if __name__ == "__main__":
 				np.save(os.path.join(SUMMARY_DIR, 'state_rewards.npy') , state_rewards)
 				np.save(os.path.join(SUMMARY_DIR, 'state_transition_probabilities.npy') , state_transition_probabilities)
 				print("[INFO] Model Saved Successfully ... ")
+
+			if np.mean(np.array(episode_rewards)[-3:]) == MAXENVSTEPS: break
 
 
 		end_time = time()
@@ -342,6 +341,7 @@ if __name__ == "__main__":
 		plt.legend(['Episode reward with smoothening widow of n = 25', 'Mean episode reward'])
 		plt.ylabel('Reward')
 		plt.xlabel('Episodes')
+		plt.grid(True)
 		plt.savefig(os.path.join(SUMMARY_DIR, 'mean_epi_plot_training_time_'+\
 							str(end_time - start_time)+'.png'))
 		
@@ -351,6 +351,7 @@ if __name__ == "__main__":
 		plt.legend(['Episode reward with smoothening widow of n = 25'])
 		plt.ylabel('Reward')
 		plt.xlabel('Episodes')
+		plt.grid(True)
 		plt.savefig(os.path.join(SUMMARY_DIR, 'epi_plot_training_time_'+\
 							str(end_time - start_time)+'.png'))
 		
@@ -360,6 +361,7 @@ if __name__ == "__main__":
 		plt.legend(['Mean episode reward'])
 		plt.ylabel('Reward')
 		plt.xlabel('Episodes')
+		plt.grid(True)
 		plt.savefig(os.path.join(SUMMARY_DIR, 'mean_plot_training_time_'+\
 							str(end_time - start_time)+'.png'))
 		
