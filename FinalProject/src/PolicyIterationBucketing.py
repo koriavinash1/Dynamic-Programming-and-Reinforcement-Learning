@@ -173,6 +173,8 @@ if __name__ == "__main__":
 	parser.add_argument('--min_expl_rate', type=float, default=0.2)
 	parser.add_argument('--expl_rate_decay', type=float, default=0.010)
 	parser.add_argument('--num_bins', type=int, default=4)
+	parser.add_argument('--modified_policy_iteration', type=int, default=500) 
+ 	parser.add_argument('--policy_iteration_type', type=str, default="Modified") 	 	
 	parser.add_argument('--log_dir', type=str, default="../logs/")
 	parser.add_argument('--reward_type', type=str, default="gt")
 	parser.add_argument('--irl_reward_path', type=str, default="NA")
@@ -202,11 +204,14 @@ if __name__ == "__main__":
 		if NUMBER_OF_BINS > 7:
 			raise ValueError("Inverse cann't be calculated, set method to modified policy iteration.")
 	
-	if args.reward_type == 'irl':
+	if args.reward_type != 'gt':
 		if args.irl_reward_path == 'NA':
 			raise ValueError("IRL Reward path not given.")
 		TIMESTAMP = args.irl_reward_path.split("/")[-3]
-		irl_reward = np.load(os.join(args.irl_reward_path, 'IRL_rewards.npy'))
+		if args.reward_type == 'irl_lp':
+			irl_lp_reward = np.load(os.join(args.irl_reward_path, 'IRL_rewards.npy'))
+		elif args.reward_type == 'irl_maxentropy':
+			irl_max_entropy_reward = np.load(os.join(args.irl_reward_path, 'IRL_rewards.npy'))
 
 
 	episode_rewards = []
@@ -316,8 +321,12 @@ if __name__ == "__main__":
 							state_rewards[current_state] = 1 
 						else:
 							state_rewards[current_state] = 2
-					elif args.reward_type == 'irl':
-						state_rewards[current_state] == irl_reward[current_state]
+					elif args.reward_type == 'irl_lp':
+						state_rewards[current_state] == irl_lp_reward[current_state]
+						
+					elif args.reward_type == 'irl_maxentropy':
+						state_rewards[current_state] == irl_max_entropy_reward[current_state]
+
 					else:
 						raise ValueError("Invalid reward_type")
 

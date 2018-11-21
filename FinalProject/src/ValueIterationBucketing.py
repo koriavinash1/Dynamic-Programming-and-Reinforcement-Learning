@@ -175,11 +175,14 @@ if __name__ == "__main__":
 	# TIMESTAMP              = datetime.now().strftime("%Y%m%d-%H%M%S")
 	TIMESTAMP = 'RESULTS'
 	
-	if args.reward_type == 'irl':
+	if args.reward_type != 'gt':
 		if args.irl_reward_path == 'NA':
 			raise ValueError("IRL Reward path not given.")
 		TIMESTAMP = args.irl_reward_path.split("/")[-3]
-		irl_reward = np.load(os.join(args.irl_reward_path, 'IRL_rewards.npy'))
+		if args.reward_type == 'irl_lp':
+			irl_lp_reward = np.load(os.join(args.irl_reward_path, 'IRL_rewards.npy'))
+		elif args.reward_type == 'irl_maxentropy':
+			irl_max_entropy_reward = np.load(os.join(args.irl_reward_path, 'IRL_rewards.npy'))
 
 
 	episode_rewards = []
@@ -289,8 +292,13 @@ if __name__ == "__main__":
 							state_rewards[current_state] = 1 
 						else:
 							state_rewards[current_state] = 2
-					elif args.reward_type == 'irl':
-						state_rewards[current_state] == irl_reward[current_state]
+
+					elif args.reward_type == 'irl_lp':
+						state_rewards[current_state] == irl_lp_reward[current_state]
+						
+					elif args.reward_type == 'irl_maxentropy':
+						state_rewards[current_state] == irl_max_entropy_reward[current_state]
+
 					else:
 						raise ValueError("Invalid reward_type")
 
@@ -322,7 +330,7 @@ if __name__ == "__main__":
 		plt.legend(['Episode reward with smoothening widow of n = 25', 'Mean episode reward'])
 		plt.ylabel('Reward')
 		plt.xlabel('Episodes')
-		plt.savefig(os.path.join(SUMMARY_DIR, args.reward_type + 'mean_epi_plot_training_time_'+\
+		plt.savefig(os.path.join(SUMMARY_DIR, args.reward_type + '_mean_epi_plot_training_time_'+\
 							str(end_time - start_time)+'.png'))
 		
 		plt.clf()
@@ -331,7 +339,7 @@ if __name__ == "__main__":
 		plt.legend(['Episode reward with smoothening widow of n = 25'])
 		plt.ylabel('Reward')
 		plt.xlabel('Episodes')
-		plt.savefig(os.path.join(SUMMARY_DIR, args.reward_type + 'epi_plot_training_time_'+\
+		plt.savefig(os.path.join(SUMMARY_DIR, args.reward_type + '_epi_plot_training_time_'+\
 							str(end_time - start_time)+'.png'))
 		
 		plt.clf()
@@ -340,7 +348,7 @@ if __name__ == "__main__":
 		plt.legend(['Mean episode reward'])
 		plt.ylabel('Reward')
 		plt.xlabel('Episodes')
-		plt.savefig(os.path.join(SUMMARY_DIR, args.reward_type + 'mean_plot_training_time_'+\
+		plt.savefig(os.path.join(SUMMARY_DIR, args.reward_type + '_mean_plot_training_time_'+\
 							str(end_time - start_time)+'.png'))
 		
 
