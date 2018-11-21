@@ -19,6 +19,7 @@ import dill
 import pickle
 import gym
 import matplotlib.pyplot as plt
+
 def compute_state_visition_freq(P_a, gamma, trajs, policy, deterministic=True):
   """compute the expected states visition frequency p(s| theta, T) 
   using dynamic programming

@@ -99,19 +99,16 @@ def run_policy_iteration(state_values, state_transition_probabilities, state_rew
 			Jpi = np.linalg.inv(np.eye(n_states) - GAMMA * Ppi).dot(reward.reshape(n_states, 1))
 
 		#Policy Improvement
-		opt_vals = np.zeros(n_states)
+		opt_vals   = np.zeros(n_states)
 		new_policy = np.zeros(n_states,dtype=int)
 
 		for state in range(n_states):
-			val_mat = np.zeros(n_actions)
-			for action in range(n_actions):
-				val_mat[action] = reward[state]+ GAMMA*np.sum(P[state][action]*Jpi)
-
+			val_mat = reward[state]+ [GAMMA*np.sum(P[state][action]*Jpi) for action in range(n_actions)]
 			opt_vals[state]   = np.max(val_mat)
 			new_policy[state] = np.argmax(val_mat)
 		
 		#Convergence condition
-		if(np.sum(policy - new_policy) == 0 or iter == 500):
+		if(np.sum(policy - new_policy) == 0 or iter == 150):
 			# print("Optimal Policy using Policy Iteration : new_policy :{}, old_policy: {} ".format(new_policy, policy))
 			break
 		#Update policy
@@ -171,7 +168,7 @@ if __name__ == "__main__":
 	parser.add_argument('--num_episodes', type=int, default=150)
 	parser.add_argument('--max_episode_len', type=int, default=10000)
 	parser.add_argument('--max_episode_steps', type=int, default=10000)
-	parser.add_argument('--gamma', type=float, default=0.99)
+	parser.add_argument('--gamma', type=float, default=1.0)
 	parser.add_argument('--expl_rate', type=float, default=1.0)
 	parser.add_argument('--min_expl_rate', type=float, default=0.2)
 	parser.add_argument('--expl_rate_decay', type=float, default=0.010)

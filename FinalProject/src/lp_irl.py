@@ -2,8 +2,6 @@
 Implementation of linear programming inverse reinforcement learning in
 	Ng & Russell 2000 paper: Algorithms for Inverse Reinforcement Learning
 	http://ai.stanford.edu/~ang/papers/icml00-irl.pdf
-
-By Yiren Lu (luyirenmax@gmail.com), May 2017
 '''
 from __future__ import print_function
 import numpy as np
@@ -11,6 +9,7 @@ from cvxopt import matrix, solvers
 import matplotlib.pyplot as plt
 import pickle
 import math
+import os
 from collections import namedtuple
 
 Step = namedtuple('Step','cur_state action next_state reward done')
@@ -91,34 +90,33 @@ def lp_irl(trans_probs, policy, gamma=0.5, l1=10, R_max=10):
 
 if __name__ == "__main__":
 
-        ###################################################################################################
-        #                                        Args Selection                                           #
-        ###################################################################################################
-        import argparse
-        parser = argparse.ArgumentParser()
-        parser.add_argument('--env_name', type=str, default='CartPole-v0')
-        parser.add_argument('--exp_name', type=str, default='IRL')
-        parser.add_argument('--policy_dir', type=str)
-        parser.add_argument('--verbose', type=int, default=1)
-        args = parser.parse_args()
+	###################################################################################################
+	#                                        Args Selection                                           #
+	###################################################################################################
+	import argparse
+	parser = argparse.ArgumentParser()
+	parser.add_argument('--env_name', type=str, default='CartPole-v0')
+	parser.add_argument('--exp_name', type=str, default='IRL')
+	parser.add_argument('--policy_dir', type=str)
+	parser.add_argument('--verbose', type=int, default=1)
+	args = parser.parse_args()
 
-        print ("[INFO]: Policy Directory: {}".format(args.policy_dir))
+	print ("[INFO]: Policy Directory: {}".format(args.policy_dir))
 	file = open(os.path.join(args.policy_dir, 'ARGS1.txt'),"r")
 	irl_args = pickle.load(file)
-	# print(args)
 	print("No: of states",np.shape(irl_args[0]))
-	P_s = irl_args[0];  policy = irl_args[1]; 
-	try:
-		gamma = args[2];  l = irl_args[3];  R_max = irl_args[4]
-		rewards = lp_irl(P_s,policy,gamma,l,R_max)
-	except Exception as e:
-		rewards = lp_irl(P_s,policy)
-                gt_rewards = irl_args[2]
-                plt.plot(gt_rewards)
-                plt.plot(rewards)
-                plt.title('Comparision between IRL rewards and GT rewards, total correlation: {}'.format( np.correlate(gt_rewards, rewards)))
-                plt.legend(['GT_rewards', 'IRL_reward'])
-                plt.ylabel('Reward')
-                plt.xlabel('States')
-                plt.savefig(os.path.join(args.policy_dir, 'lp_irl_results.png'))
-                np.save(args.policy_dir + 'IRL_rewards',rewards)
+
+	P_s = irl_args[0]
+	policy = irl_args[1]
+
+	gt_rewards = irl_args[2]
+	rewards = lp_irl(P_s,policy)
+	
+	plt.plot(gt_rewards)
+	plt.plot(rewards)
+	plt.title('Comparision IRL and GT rewards, total correlation: {}'.format(np.round(np.mean((gt_rewards - rewards)**2), 3)))
+	plt.legend(['GT_rewards', 'IRL_reward'])
+	plt.ylabel('Reward')
+	plt.xlabel('States')
+	plt.savefig(os.path.join(args.policy_dir, 'lp_irl_results.png'))
+	np.save(args.policy_dir + 'IRL_rewards',rewards)
