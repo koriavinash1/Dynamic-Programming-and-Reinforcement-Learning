@@ -92,7 +92,7 @@ while True:
 env.close()
 
 print ("[INFO] Final evaluation gt_reward: {}, irl_reward: {}".format(gt_episode_reward, irl_episode_reward))
-file = open(os.path.join(args.policy_dir, 'cumilativeRewardlog.txt'),"a")
+file = open('cumilativeRewardlog.txt',"a")
 file.write("[INFO] Final evaluation Model: {}, gt_reward: {}, irl_reward: {}".format(args.policy_dir.split("/")[-3], gt_episode_reward, irl_episode_reward))
 file.write("\n")
 file.close()

@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import gym
 import os
-from gym import wrappers
+# from gym import wrappers
 import pickle
 from collections import namedtuple
 import dill
@@ -197,7 +197,7 @@ if __name__ == "__main__":
 	env = gym.make(ENVIRONMENT)
 	env._max_episode_steps = MAXENVSTEPS
 
-	env = wrappers.Monitor(env, os.path.join(SUMMARY_DIR, ENVIRONMENT), force=True, video_callable=None)
+	# env = wrappers.Monitor(env, os.path.join(SUMMARY_DIR, ENVIRONMENT), force=True, video_callable=None)
 	env.seed(1)
 
 	observation = env.reset()
@@ -255,7 +255,7 @@ if __name__ == "__main__":
 			current_state = observation_to_state(current_observation)
 
 			episode_reward = 0
-			env.render()
+			# env.render()
 			if i_episode % 50 == 49: EXPLORATION_RATE = max(MIN_EXPLORATION_RATE, EXPLORATION_RATE * 0.1)
 
 			if np.random.uniform() <= EXPLORATION_RATE: current_state = np.random.randint(0, num_states, 1)
@@ -306,7 +306,7 @@ if __name__ == "__main__":
 						update_state_transition_probabilities_from_counters(state_transition_probabilities,\
 													state_transition_counters)
 					state_values = run_value_iteration(state_values, state_transition_probabilities, state_rewards)
-					env.close()
+					# env.close()
 					break
 
 
