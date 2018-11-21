@@ -174,7 +174,7 @@ if __name__ == "__main__":
 	parser.add_argument('--expl_rate_decay', type=float, default=0.010)
 	parser.add_argument('--num_bins', type=int, default=4)
 	parser.add_argument('--modified_policy_iteration', type=int, default=500) 
- 	parser.add_argument('--policy_iteration_type', type=str, default="Modified") 	 	
+	parser.add_argument('--policy_iteration_type', type=str, default="Modified") 	 	
 	parser.add_argument('--log_dir', type=str, default="../logs/")
 	parser.add_argument('--reward_type', type=str, default="gt")
 	parser.add_argument('--irl_reward_path', type=str, default="NA")
