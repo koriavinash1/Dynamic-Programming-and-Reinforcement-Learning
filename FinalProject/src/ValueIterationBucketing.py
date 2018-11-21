@@ -318,7 +318,7 @@ if __name__ == "__main__":
 
 			# terminaltion condition
 			# print (np.mean(np.array(episode_rewards)[-10:]))
-			if np.mean(np.array(episode_rewards)[-5:]) == MAXENVSTEPS: break
+			if np.mean(np.array(episode_rewards)[-5:]) == MAXENVSTEPS and i_episode > 32: break
 
 
 		end_time = time()
