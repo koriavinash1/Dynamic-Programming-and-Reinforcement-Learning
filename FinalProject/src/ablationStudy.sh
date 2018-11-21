@@ -22,6 +22,7 @@
 # python lp_irl.py --policy_dir '../logs/ModifiedPolicyIteration_No_Bins_5/CartPole-v0/20181121-030254/IRL/LP'
 # python lp_irl.py --policy_dir '../logs/ModifiedPolicyIteration_No_Bins_7/CartPole-v0/20181121-031936/IRL/LP'
 # python lp_irl.py --policy_dir '../logs/ModifiedPolicyIteration_No_Bins_11/CartPole-v0/20181121-033649/IRL/LP'
+python lp_irl.py --policy_dir '../logs/ModifiedPolicyIteration_No_Bins_13/CartPole-v0/20181121-072428/IRL/LP'
 
 
 # IRL Cumilative Cost Comparision

@@ -26,8 +26,6 @@ irl_reward = np.load(os.path.join(args.policy_dir, 'IRL_rewards.npy'))
 optimal_policy = np.load(os.path.join(args.policy_dir, 'Optimal_policy.npy'))
 state_trans_probab = np.load(os.path.join(args.policy_dir, 'Trans_prob.npy'))
 
-
-
 select_observations = lambda O: np.array([O[1],O[2],O[3]])
 
 ##########################################################################
@@ -44,7 +42,6 @@ def observation_to_state(observation):
 	
 state_values = np.load(os.path.join(SUMMARY_DIR, 'state_values.npy'))
 state_transition_probabilities = np.load(os.path.join(SUMMARY_DIR, 'state_transition_probabilities.npy'))
-# env.seed(1)
 env.render()
 current_observation = env.reset()
 current_observation = select_observations(current_observation)

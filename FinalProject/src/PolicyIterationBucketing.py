@@ -103,7 +103,7 @@ def run_policy_iteration(state_values, state_transition_probabilities, state_rew
 		new_policy = np.zeros(n_states,dtype=int)
 
 		for state in range(n_states):
-			val_mat = reward[state]+ [GAMMA*np.sum(P[state][action]*Jpi) for action in range(n_actions)]
+			val_mat = reward[state]+ np.array([GAMMA*np.sum(P[state][action]*Jpi) for action in range(n_actions)])
 			opt_vals[state]   = np.max(val_mat)
 			new_policy[state] = np.argmax(val_mat)
 		

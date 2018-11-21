@@ -1,12 +1,13 @@
 RL Tasks: ------------
 
 Bucketting Value Iteration: done
+Bucketting Policy Iteration: some error rewards random pattern
 Linear Approx Q-learning: done
 MonteCarlo PG: done
-PPO: 
 
 IRL Tasks: -----------
-LPP: 
+LPP: done 
 Max Entropy:
-Deep Max Entropy:
-Reward Constrained IRL wth LPP
+
+Automation: ----------
+script: done
