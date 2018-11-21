@@ -180,9 +180,9 @@ if __name__ == "__main__":
 			raise ValueError("IRL Reward path not given.")
 		TIMESTAMP = args.irl_reward_path.split("/")[-3]
 		if args.reward_type == 'irl_lp':
-			irl_lp_reward = np.load(os.join(args.irl_reward_path, 'IRL_rewards.npy'))
+			irl_lp_reward = np.load(os.path.join(args.irl_reward_path, 'IRL_rewards.npy'))
 		elif args.reward_type == 'irl_maxentropy':
-			irl_max_entropy_reward = np.load(os.join(args.irl_reward_path, 'IRL_rewards.npy'))
+			irl_max_entropy_reward = np.load(os.path.join(args.irl_reward_path, 'IRL_rewards.npy'))
 
 
 	episode_rewards = []
@@ -295,7 +295,7 @@ if __name__ == "__main__":
 
 					elif args.reward_type == 'irl_lp':
 						state_rewards[current_state] == irl_lp_reward[current_state]
-						
+
 					elif args.reward_type == 'irl_maxentropy':
 						state_rewards[current_state] == irl_max_entropy_reward[current_state]
 
