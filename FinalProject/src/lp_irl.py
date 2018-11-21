@@ -119,4 +119,4 @@ if __name__ == "__main__":
 	plt.ylabel('Reward')
 	plt.xlabel('States')
 	plt.savefig(os.path.join(args.policy_dir, 'lp_irl_results.png'))
-	np.save(args.policy_dir + 'IRL_rewards',rewards)
+	np.save(os.path.join(args.policy_dir, 'IRL_rewards'),rewards)

@@ -164,18 +164,18 @@ if __name__ == "__main__":
 	import argparse
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--env_name', type=str, default='CartPole-v0')
-	parser.add_argument('--exp_name', type=str, default='PolicyIteration')
-	parser.add_argument('--num_episodes', type=int, default=150)
+	parser.add_argument('--exp_name', type=str, default='ValueIteration')
+	parser.add_argument('--num_episodes', type=int, default=50)
 	parser.add_argument('--max_episode_len', type=int, default=10000)
 	parser.add_argument('--max_episode_steps', type=int, default=10000)
-	parser.add_argument('--gamma', type=float, default=1.0)
+	parser.add_argument('--gamma', type=float, default=0.99)
 	parser.add_argument('--expl_rate', type=float, default=1.0)
 	parser.add_argument('--min_expl_rate', type=float, default=0.2)
 	parser.add_argument('--expl_rate_decay', type=float, default=0.010)
-	parser.add_argument('--num_bins', type=int, default=7)
-	parser.add_argument('--modified_policy_iteration', type=int, default=500) 
-	parser.add_argument('--policy_iteration_type', type=str, default="Modified") 
+	parser.add_argument('--num_bins', type=int, default=4)
 	parser.add_argument('--log_dir', type=str, default="../logs/")
+	parser.add_argument('--reward_type', type=str, default="gt")
+	parser.add_argument('--irl_reward_path', type=str, default="NA")
 	parser.add_argument('--train', type=int, default=1)
 	parser.add_argument('--verbose', type=int, default=1)
 	args = parser.parse_args()
@@ -191,7 +191,7 @@ if __name__ == "__main__":
 	MIN_EXPLORATION_RATE   = args.min_expl_rate
 	EXPLORATION_RATE_DECAY = args.expl_rate_decay
 	Train                  = args.train
-	NUMBER_OF_BINS         = args.num_bins 
+	NUMBER_OF_BINS         = args.num_bins
 	OUTPUT_RESULTS_DIR     = args.log_dir
 	TIMESTAMP              = datetime.now().strftime("%Y%m%d-%H%M%S")
 	# TIMESTAMP = 'RESULTS'
@@ -202,6 +202,13 @@ if __name__ == "__main__":
 		if NUMBER_OF_BINS > 7:
 			raise ValueError("Inverse cann't be calculated, set method to modified policy iteration.")
 	
+	if args.reward_type == 'irl':
+		if args.irl_reward_path == 'NA':
+			raise ValueError("IRL Reward path not given.")
+		TIMESTAMP = args.irl_reward_path.split("/")[-3]
+		irl_reward = np.load(os.join(args.irl_reward_path, 'IRL_rewards.npy'))
+
+
 	episode_rewards = []
 	mean_reward     = []
 	SUMMARY_DIR     = os.path.join(OUTPUT_RESULTS_DIR,  args.policy_iteration_type + EXPNAME + "_No_Bins_" + str(NUMBER_OF_BINS),\
@@ -209,7 +216,7 @@ if __name__ == "__main__":
 
 
 	if not os.path.exists(SUMMARY_DIR):
-			os.makedirs(SUMMARY_DIR)
+		os.makedirs(SUMMARY_DIR)
 
 	env = gym.make(ENVIRONMENT)
 	env._max_episode_steps = MAXENVSTEPS
@@ -258,8 +265,6 @@ if __name__ == "__main__":
 	state_transition_counters = np.zeros((num_states, num_states, num_actions))
 
 
-
-
 	###################################################################################################
 	#                                        iterate loops                                            #
 	###################################################################################################
@@ -292,9 +297,8 @@ if __name__ == "__main__":
 
 				episode_reward = episode_reward + reward        
 				st_time = time()
-				if not done:
-					state_rewards[current_state] = 0.1            
-				elif done or t == MAX_T-1:
+				     
+				if done or t == MAX_T-1:
 					episode_rewards.append(episode_reward)
 					mean_reward.append(np.mean(episode_rewards))
 
@@ -305,12 +309,17 @@ if __name__ == "__main__":
 						print("Mean Reward: ", np.mean(episode_rewards))
 						print("Max reward so far: ", max(episode_rewards))
 
-					if t < 195:
-						state_rewards[current_state] = -1
-					elif t < 300:
-						state_rewards[current_state] = 1 
+					if args.reward_type == 'gt':
+						if t < 195:
+							state_rewards[current_state] = -1
+						elif t < 300:
+							state_rewards[current_state] = 1 
+						else:
+							state_rewards[current_state] = 2
+					elif args.reward_type == 'irl':
+						state_rewards[current_state] == irl_reward[current_state]
 					else:
-						state_rewards[current_state] = 2
+						raise ValueError("Invalid reward_type")
 
 					state_transition_probabilities = \
 						update_state_transition_probabilities_from_counters(state_transition_probabilities,\
@@ -321,12 +330,14 @@ if __name__ == "__main__":
 
 
 			if i_episode % 20 == 19:
-				np.save(os.path.join(SUMMARY_DIR, 'state_values.npy') , state_values)
-				np.save(os.path.join(SUMMARY_DIR, 'state_rewards.npy') , state_rewards)
-				np.save(os.path.join(SUMMARY_DIR, 'state_transition_probabilities.npy') , state_transition_probabilities)
-				print("[INFO] Model Saved Successfully ... ")
+				np.save(os.path.join(SUMMARY_DIR, args.reward_type + '_state_values.npy') , state_values)
+				np.save(os.path.join(SUMMARY_DIR, args.reward_type + '_state_rewards.npy') , state_rewards)
+				np.save(os.path.join(SUMMARY_DIR, args.reward_type + '_state_transition_probabilities.npy') , state_transition_probabilities)
+				if args.verbose: print("[INFO] Model Saved Successfully ... ")
 
-			if np.mean(np.array(episode_rewards)[-3:]) == MAXENVSTEPS: break
+			# terminaltion condition
+			# print (np.mean(np.array(episode_rewards)[-10:]))
+			if np.mean(np.array(episode_rewards)[-5:]) == MAXENVSTEPS: break
 
 
 		end_time = time()
@@ -338,8 +349,7 @@ if __name__ == "__main__":
 		plt.legend(['Episode reward with smoothening widow of n = 25', 'Mean episode reward'])
 		plt.ylabel('Reward')
 		plt.xlabel('Episodes')
-		plt.grid(True)
-		plt.savefig(os.path.join(SUMMARY_DIR, 'mean_epi_plot_training_time_'+\
+		plt.savefig(os.path.join(SUMMARY_DIR, args.reward_type + 'mean_epi_plot_training_time_'+\
 							str(end_time - start_time)+'.png'))
 		
 		plt.clf()
@@ -348,8 +358,7 @@ if __name__ == "__main__":
 		plt.legend(['Episode reward with smoothening widow of n = 25'])
 		plt.ylabel('Reward')
 		plt.xlabel('Episodes')
-		plt.grid(True)
-		plt.savefig(os.path.join(SUMMARY_DIR, 'epi_plot_training_time_'+\
+		plt.savefig(os.path.join(SUMMARY_DIR, args.reward_type + 'epi_plot_training_time_'+\
 							str(end_time - start_time)+'.png'))
 		
 		plt.clf()
@@ -358,8 +367,7 @@ if __name__ == "__main__":
 		plt.legend(['Mean episode reward'])
 		plt.ylabel('Reward')
 		plt.xlabel('Episodes')
-		plt.grid(True)
-		plt.savefig(os.path.join(SUMMARY_DIR, 'mean_plot_training_time_'+\
+		plt.savefig(os.path.join(SUMMARY_DIR, args.reward_type + 'mean_plot_training_time_'+\
 							str(end_time - start_time)+'.png'))
 		
 
@@ -390,34 +398,35 @@ if __name__ == "__main__":
 
 
 
-	###################################################################################################
-	#                                 Code to write details for LP IRL                                #
-	###################################################################################################
+	if args.reward_type == 'gt':
+		###################################################################################################
+		#                                 Code to write details for LP IRL                                #
+		###################################################################################################
 
-	print("[INFO] Writing IRL LP File ....")
-	policy = np.array([pick_best_action(i,state_values,state_transition_probabilities) for i in range(num_states)])
-	LPPATH = os.path.join(SUMMARY_DIR, "IRL/LP/")
-	if not os.path.exists(LPPATH): os.makedirs(LPPATH)
-	filename = "ARGS1.txt"
-	file = open(LPPATH+filename,"wb")
-	args = [state_transition_probabilities, policy, state_rewards]
-	pickle.dump(args, file, protocol=2)
-	file.close()
-	np.save(LPPATH+'Trans_prob',state_transition_probabilities)
-	np.save(LPPATH+'Optimal_policy', policy)
-	np.save(LPPATH+'Rewards_Gt',state_rewards)
-
-
-	###################################################################################################
-	#                            Code to write details for MAXENTROPY IRL                             #
-	###################################################################################################
-
-	print("[INFO] Writing MAXENTROPY LP File ....")
+		print("[INFO] Writing IRL LP File ....")
+		policy = np.array([pick_best_action(i,state_values,state_transition_probabilities) for i in range(num_states)])
+		LPPATH = os.path.join(SUMMARY_DIR, "IRL/LP/")
+		if not os.path.exists(LPPATH): os.makedirs(LPPATH)
+		filename = "ARGS1.txt"
+		file = open(LPPATH+filename,"wb")
+		args = [state_transition_probabilities, policy, state_rewards]
+		pickle.dump(args, file, protocol=2)
+		file.close()
+		np.save(LPPATH+'Trans_prob',state_transition_probabilities)
+		np.save(LPPATH+'Optimal_policy', policy)
+		np.save(LPPATH+'Rewards_Gt',state_rewards)
 
 
+		###################################################################################################
+		#                            Code to write details for MAXENTROPY IRL                             #
+		###################################################################################################
 
-	MAXENTROPYPATH = os.path.join(SUMMARY_DIR, "IRL/Max_entropy/")
-	if not os.path.exists(MAXENTROPYPATH): os.makedirs(MAXENTROPYPATH)
-	np.save(MAXENTROPYPATH+'Trans_prob',state_transition_probabilities)
-	np.save(MAXENTROPYPATH+'Trajs',generate_demonstrations(),allow_pickle=True)
-	np.save(MAXENTROPYPATH+'Rewards_Gt',state_rewards)
+		print("[INFO] Writing MAXENTROPY LP File ....")
+
+
+
+		MAXENTROPYPATH = os.path.join(SUMMARY_DIR, "IRL/Max_entropy/")
+		if not os.path.exists(MAXENTROPYPATH): os.makedirs(MAXENTROPYPATH)
+		np.save(MAXENTROPYPATH+'Trans_prob',state_transition_probabilities)
+		np.save(MAXENTROPYPATH+'Trajs',generate_demonstrations(),allow_pickle=True)
+		np.save(MAXENTROPYPATH+'Rewards_Gt',state_rewards)
