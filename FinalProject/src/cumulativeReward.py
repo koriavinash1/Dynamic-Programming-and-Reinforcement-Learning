@@ -7,8 +7,8 @@ from gym import wrappers
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--env_name', type=str, default='CartPole-v0')
-parser.add_argument('--max_episode_len', type=int, default=10000)
-parser.add_argument('--max_episode_steps', type=int, default=10000)
+parser.add_argument('--max_episode_len', type=int, default=1000)
+parser.add_argument('--max_episode_steps', type=int, default=1000)
 parser.add_argument('--policy_dir', type=str)
 
 args = parser.parse_args()
