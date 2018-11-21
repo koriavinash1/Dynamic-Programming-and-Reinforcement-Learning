@@ -7,8 +7,8 @@ from gym import wrappers
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--env_name', type=str, default='CartPole-v0')
-parser.add_argument('--max_episode_len', type=int, default=10000)
-parser.add_argument('--max_episode_steps', type=int, default=10000)
+parser.add_argument('--max_episode_len', type=int, default=1000)
+parser.add_argument('--max_episode_steps', type=int, default=1000)
 parser.add_argument('--policy_dir', type=str)
 
 args = parser.parse_args()
@@ -92,7 +92,7 @@ while True:
 env.close()
 
 print ("[INFO] Final evaluation gt_reward: {}, irl_reward: {}".format(gt_episode_reward, irl_episode_reward))
-file = open(os.path.join(args.policy_dir, 'cumilativeRewardlog.txt'),"a")
+file = open(os.path.join('cumilativeRewardlog.txt'),"a")
 file.write("[INFO] Final evaluation Model: {}, gt_reward: {}, irl_reward: {}".format(args.policy_dir.split("/")[-3], gt_episode_reward, irl_episode_reward))
 file.write("\n")
 file.close()

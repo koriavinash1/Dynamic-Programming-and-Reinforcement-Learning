@@ -145,8 +145,8 @@ if __name__ == "__main__":
 	parser.add_argument('--env_name', type=str, default='CartPole-v0')
 	parser.add_argument('--exp_name', type=str, default='ValueIteration')
 	parser.add_argument('--num_episodes', type=int, default=50)
-	parser.add_argument('--max_episode_len', type=int, default=10000)
-	parser.add_argument('--max_episode_steps', type=int, default=10000)
+	parser.add_argument('--max_episode_len', type=int, default=1000)
+	parser.add_argument('--max_episode_steps', type=int, default=1000)
 	parser.add_argument('--gamma', type=float, default=0.99)
 	parser.add_argument('--expl_rate', type=float, default=1.0)
 	parser.add_argument('--min_expl_rate', type=float, default=0.2)
@@ -255,7 +255,7 @@ if __name__ == "__main__":
 			current_state = observation_to_state(current_observation)
 
 			episode_reward = 0
-			env.render()
+			# env.render()
 			if i_episode % 50 == 49: EXPLORATION_RATE = max(MIN_EXPLORATION_RATE, EXPLORATION_RATE * 0.1)
 
 			if np.random.uniform() <= EXPLORATION_RATE: current_state = np.random.randint(0, num_states, 1)
@@ -306,7 +306,7 @@ if __name__ == "__main__":
 						update_state_transition_probabilities_from_counters(state_transition_probabilities,\
 													state_transition_counters)
 					state_values = run_value_iteration(state_values, state_transition_probabilities, state_rewards)
-					env.close()
+					# env.close()
 					break
 
 
