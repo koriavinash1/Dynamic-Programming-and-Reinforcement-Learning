@@ -1,0 +1,10 @@
+[INFO] Final evaluation Model: ValueIteration_No_Bins_5, gt_reward: 105.0, irl_lp_reward: 17.0, irl_,maxentropy_reward: 0
+[INFO] Final evaluation Model: ValueIteration_No_Bins_7, gt_reward: 115.0, irl_lp_reward: 19.0, irl_,maxentropy_reward: 0
+[INFO] Final evaluation Model: ValueIteration_No_Bins_11, gt_reward: 227.0, irl_lp_reward: 14.0, irl_,maxentropy_reward: 0
+[INFO] Final evaluation Model: ValueIteration_No_Bins_13, gt_reward: 1000.0, irl_lp_reward: 20.0, irl_,maxentropy_reward: 0
+[INFO] Final evaluation Model: InversePolicyIteration_No_Bins_5, gt_reward: 207.0, irl_lp_reward: 13.0, irl_,maxentropy_reward: 0
+[INFO] Final evaluation Model: InversePolicyIteration_No_Bins_7, gt_reward: 209.0, irl_lp_reward: 52.0, irl_,maxentropy_reward: 0
+[INFO] Final evaluation Model: ModifiedPolicyIteration_No_Bins_5, gt_reward: 207.0, irl_lp_reward: 19.0, irl_,maxentropy_reward: 0
+[INFO] Final evaluation Model: ModifiedPolicyIteration_No_Bins_7, gt_reward: 935.0, irl_lp_reward: 10.0, irl_,maxentropy_reward: 0
+[INFO] Final evaluation Model: ModifiedPolicyIteration_No_Bins_11, gt_reward: 951.0, irl_lp_reward: 19.0, irl_,maxentropy_reward: 0
+[INFO] Final evaluation Model: ModifiedPolicyIteration_No_Bins_13, gt_reward: 1000.0, irl_lp_reward: 24.0, irl_,maxentropy_reward: 0

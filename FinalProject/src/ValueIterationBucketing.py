@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import gym
 import os
-from gym import wrappers
+# from gym import wrappers
 import pickle
 from collections import namedtuple
 import dill
@@ -197,7 +197,7 @@ if __name__ == "__main__":
 	env = gym.make(ENVIRONMENT)
 	env._max_episode_steps = MAXENVSTEPS
 
-	env = wrappers.Monitor(env, os.path.join(SUMMARY_DIR, ENVIRONMENT), force=True, video_callable=None)
+	# env = wrappers.Monitor(env, os.path.join(SUMMARY_DIR, ENVIRONMENT), force=True, video_callable=None)
 	env.seed(1)
 
 	observation = env.reset()
