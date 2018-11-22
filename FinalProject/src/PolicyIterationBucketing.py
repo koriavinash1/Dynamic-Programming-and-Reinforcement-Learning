@@ -164,7 +164,7 @@ if __name__ == "__main__":
 	import argparse
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--env_name', type=str, default='CartPole-v0')
-	parser.add_argument('--exp_name', type=str, default='ValueIteration')
+	parser.add_argument('--exp_name', type=str, default='PolicyIteration')
 	parser.add_argument('--num_episodes', type=int, default=50)
 	parser.add_argument('--max_episode_len', type=int, default=1000)
 	parser.add_argument('--max_episode_steps', type=int, default=1000)
@@ -195,8 +195,8 @@ if __name__ == "__main__":
 	Train                  = args.train
 	NUMBER_OF_BINS         = args.num_bins
 	OUTPUT_RESULTS_DIR     = args.log_dir
-	TIMESTAMP              = datetime.now().strftime("%Y%m%d-%H%M%S")
-	# TIMESTAMP = 'RESULTS'
+	# TIMESTAMP              = datetime.now().strftime("%Y%m%d-%H%M%S")
+	TIMESTAMP = 'RESULTS'
 	if args.policy_iteration_type == "Modified":
 		M = args.modified_policy_iteration
 	else: 
@@ -207,7 +207,7 @@ if __name__ == "__main__":
 	if args.reward_type != 'gt':
 		if args.irl_reward_path == 'NA':
 			raise ValueError("IRL Reward path not given.")
-		TIMESTAMP = args.irl_reward_path.split("/")[-3]
+		#TIMESTAMP = args.irl_reward_path.split("/")[-3]
 		if args.reward_type == 'irl_lp':
 			irl_lp_reward = np.load(os.path.join(args.irl_reward_path, 'IRL_rewards.npy'))
 		elif args.reward_type == 'irl_maxentropy':
@@ -346,16 +346,16 @@ if __name__ == "__main__":
 
 			# terminaltion condition
 			# print (np.mean(np.array(episode_rewards)[-10:]))
-			if np.mean(np.array(episode_rewards)[-5:]) == MAXENVSTEPS and i_episode > 32: break
+			if np.mean(np.array(episode_rewards)[-15:]) == MAXENVSTEPS and i_episode > 32: break
 
 
 		end_time = time()
-		episode_rewards = moving_average(episode_rewards, n = 25)
-		episode_rewards[0] = mean_reward[30]
+		episode_rewards = moving_average(episode_rewards, n = 20)
+		episode_rewards[0] = mean_reward[5]
 		plt.plot(episode_rewards)
-		plt.plot(mean_reward[30:])
+		plt.plot(mean_reward[5:])
 		plt.title('Value Iteration Reward Convergence for '+ str(NUMBER_OF_BINS) +' Bins')
-		plt.legend(['Episode reward with smoothening widow of n = 25', 'Mean episode reward'])
+		plt.legend(['Episode reward with smoothening widow of n = 10', 'Mean episode reward'])
 		plt.ylabel('Reward')
 		plt.xlabel('Episodes')
 		plt.savefig(os.path.join(SUMMARY_DIR, args.reward_type + 'mean_epi_plot_training_time_'+\
@@ -364,14 +364,14 @@ if __name__ == "__main__":
 		plt.clf()
 		plt.plot(episode_rewards)
 		plt.title('Value Iteration Reward Convergence for '+ str(NUMBER_OF_BINS) +' Bins')
-		plt.legend(['Episode reward with smoothening widow of n = 25'])
+		plt.legend(['Episode reward with smoothening widow of n = 10'])
 		plt.ylabel('Reward')
 		plt.xlabel('Episodes')
 		plt.savefig(os.path.join(SUMMARY_DIR, args.reward_type + 'epi_plot_training_time_'+\
 							str(end_time - start_time)+'.png'))
 		
 		plt.clf()
-		plt.plot(mean_reward[30:])
+		plt.plot(mean_reward[5:])
 		plt.title('Value Iteration Reward Convergence for '+ str(NUMBER_OF_BINS) +' Bins')
 		plt.legend(['Mean episode reward'])
 		plt.ylabel('Reward')

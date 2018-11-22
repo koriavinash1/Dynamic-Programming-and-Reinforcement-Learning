@@ -102,7 +102,7 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 
 	print ("[INFO]: Policy Directory: {}".format(args.policy_dir))
-	file = open(os.path.join(args.policy_dir, 'ARGS1.txt'),"r")
+	file = open(os.path.join(args.policy_dir, 'ARGS1.txt'),"rb")
 	irl_args = pickle.load(file)
 	print("No: of states",np.shape(irl_args[0]))
 
