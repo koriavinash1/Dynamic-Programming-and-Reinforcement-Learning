@@ -24,15 +24,15 @@ env.seed(1)
 
 gt_reward = np.load(os.path.join(args.policy_dir, 'gt_state_rewards.npy'))
 irl_lp_reward = np.load(os.path.join(args.policy_dir, 'irl_lp_state_rewards.npy'))
-# irl_maxentropy_reward = np.load(os.path.join(args.policy_dir, 'irl_maxentropy_state_rewards.npy'))
+irl_maxentropy_reward = np.load(os.path.join(args.policy_dir, 'irl_maxentropy_state_rewards.npy'))
 
 gt_state_values = np.load(os.path.join(args.policy_dir, 'gt_state_values.npy'))
 irl_lp_state_values = np.load(os.path.join(args.policy_dir, 'irl_lp_state_values.npy'))
-# irl_maxentropy_state_values = np.load(os.path.join(args.policy_dir, 'irl_maxentropy_state_values.npy'))
+irl_maxentropy_state_values = np.load(os.path.join(args.policy_dir, 'irl_maxentropy_state_values.npy'))
 
 gt_state_transition_probabilities = np.load(os.path.join(args.policy_dir, 'gt_state_transition_probabilities.npy'))
 irl_lp_state_transition_probabilities = np.load(os.path.join(args.policy_dir, 'irl_lp_state_transition_probabilities.npy'))
-# irl_maxentropy_state_transition_probabilities = np.load(os.path.join(args.policy_dir, 'irl_maxentropy_state_transition_probabilities.npy'))
+irl_maxentropy_state_transition_probabilities = np.load(os.path.join(args.policy_dir, 'irl_maxentropy_state_transition_probabilities.npy'))
 
 select_observations = lambda O: np.array([O[1],O[2],O[3]])
 
@@ -123,7 +123,6 @@ current_observation = select_observations(current_observation)
 current_state = observation_to_state(current_observation)
 irl_maxentropy_episode_reward = 0
 
-"""
 while True:
 	action = pick_best_action(current_state, irl_maxentropy_state_values, irl_maxentropy_state_transition_probabilities)
 	old_state = current_state
@@ -131,8 +130,8 @@ while True:
 	irl_maxentropy_episode_reward = irl_maxentropy_episode_reward + reward
 	current_state = observation_to_state(select_observations(observation))
 	if done: break
-        env.close()
-"""
+        # env.close()
+
 
 
 print ("[INFO] Final evaluation gt_reward: {}, irl_lp_reward: {}, irl_,maxentropy_reward: {}".format(gt_episode_reward, irl_lp_episode_reward, irl_maxentropy_episode_reward))
