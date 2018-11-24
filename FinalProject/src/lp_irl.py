@@ -25,7 +25,7 @@ def sigmoid(xs):
 	return [1 / (1 + math.exp(-x)) for x in xs]
 
 
-def lp_irl(trans_probs, policy, gamma=0.5, l1=10, R_max=10):
+def lp_irl(trans_probs, policy, gamma=0.5, l1=1., R_max=3):
 	"""
 	inputs:
 		trans_probs       NxNxN_ACTIONS transition matrix
@@ -36,7 +36,6 @@ def lp_irl(trans_probs, policy, gamma=0.5, l1=10, R_max=10):
 	returns:
 		rewards           Nx1 reward vector
 	"""
-	l1 = 7
 	N_STATES, _, N_ACTIONS = np.shape(trans_probs)
 	N_STATES = int(N_STATES)
 	N_ACTIONS = int(N_ACTIONS)
@@ -112,8 +111,8 @@ if __name__ == "__main__":
 	gt_rewards = irl_args[2]
 	rewards = lp_irl(P_s,policy)
 	
-	plt.plot(gt_rewards)
-	plt.plot(rewards)
+	plt.plot(gt_rewards, '*b')
+	plt.plot(rewards, 'or')
 	plt.title('Comparision IRL and GT rewards, total correlation: {}'.format(np.round(np.mean((gt_rewards - rewards)**2), 3)))
 	plt.legend(['GT_rewards', 'IRL_reward'])
 	plt.ylabel('Reward')

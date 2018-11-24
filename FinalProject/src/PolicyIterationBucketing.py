@@ -201,7 +201,7 @@ if __name__ == "__main__":
 		M = args.modified_policy_iteration
 	else: 
 		M = None
-		if NUMBER_OF_BINS > 7:
+		if NUMBER_OF_BINS > 10:
 			raise ValueError("Inverse cann't be calculated, set method to modified policy iteration.")
 	
 	if args.reward_type != 'gt':
@@ -285,9 +285,9 @@ if __name__ == "__main__":
 
 			episode_reward = 0
 			# env.render()
-			if i_episode % 50 == 49: EXPLORATION_RATE = max(MIN_EXPLORATION_RATE, EXPLORATION_RATE * 0.1)
+			# if i_episode % 50 == 49: EXPLORATION_RATE = max(MIN_EXPLORATION_RATE, EXPLORATION_RATE * 0.1)
 
-			if np.random.uniform() <= EXPLORATION_RATE: current_state = np.random.randint(0, num_states, 1)
+			# if np.random.uniform() <= EXPLORATION_RATE: current_state = np.random.randint(0, num_states, 1)
 
 			for t in range(MAX_T):
 				action = pick_best_action(current_state, state_values, state_transition_probabilities)
@@ -346,10 +346,12 @@ if __name__ == "__main__":
 
 			# terminaltion condition
 			# print (np.mean(np.array(episode_rewards)[-10:]))
-			if np.mean(np.array(episode_rewards)[-15:]) == MAXENVSTEPS and i_episode > 32: break
+			# if np.mean(np.array(episode_rewards)[-15:]) == MAXENVSTEPS and i_episode > 32: break
 
 
 		end_time = time()
+		np.save(os.path.join(SUMMARY_DIR, args.reward_type + '_episode_rewards.npy') , episode_rewards)
+		np.save(os.path.join(SUMMARY_DIR, args.reward_type + '_mean_episode_rewards.npy') , mean_reward)
 		episode_rewards = moving_average(episode_rewards, n = 20)
 		episode_rewards[0] = mean_reward[5]
 		plt.plot(episode_rewards)

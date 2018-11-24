@@ -16,8 +16,10 @@ import dill
 import pickle
 import gym
 import matplotlib.pyplot as plt
-
+import numpy as np
+import os
 import math
+from tqdm import tqdm
 from collections import namedtuple
 
 
@@ -25,20 +27,20 @@ Step = namedtuple('Step','cur_state action next_state reward done')
 
 
 def show_img(img):
-	print img.shape, img.dtype
+	print (img.shape, img.dtype)
 	plt.imshow(img[:,:,0])
 	plt.ion()
 	plt.show()
 	raw_input()
 
 
-def heatmap2d(hm_mat, title='', block=True, fig_num=1, text=True):
+def heatmap2d(hm_mat, title='', block=False, fig_num=1, text=True):
 	"""
 	Display heatmap
 	input:
 		hm_mat:   mxn 2d np array
 	"""
-	print 'map shape: {}, data type: {}'.format(hm_mat.shape, hm_mat.dtype)
+	print ('map shape: {}, data type: {}'.format(hm_mat.shape, hm_mat.dtype))
 
 	if block:
 		plt.figure(fig_num)
@@ -56,10 +58,10 @@ def heatmap2d(hm_mat, title='', block=True, fig_num=1, text=True):
 								 horizontalalignment='center',
 								 verticalalignment='center',
 								 )
-
+	plt.savefig(str(np.random.rand()) + '.png')
 	if block:
 		plt.ion()
-		print 'press enter to continue'
+		print ('press enter to continue')
 		plt.show()
 		raw_input()
 
@@ -107,8 +109,9 @@ def heatmap3d(hm_mat, title=''):
 	#
 	# Finally, display the plot.
 	#
-	plt.show()
-	raw_input()
+	plt.savefig(str(np.random.rand()) + '.png')
+	#plt.show()
+	#raw_input()
 
 
 def normalize(vals):
@@ -167,15 +170,15 @@ def compute_state_visition_freq(P_a, gamma, trajs, policy, deterministic=True):
 
 
 
-def maxent_irl(feat_map, P_a, gamma, trajs, lr=0.1, n_iters=50):
+def maxent_irl(feat_map, P_a, gamma, trajs, lr=0.1, n_iters=15):
 	"""
 	Maximum Entropy Inverse Reinforcement Learning (Maxent IRL)
 
 	inputs:
 		feat_map    NxD matrix - the features for each state
 		P_a         NxNxN_ACTIONS matrix - P_a[s0, s1, a] is the transition prob of 
-																			 landing at state s1 when taking action 
-																			 a at state s0
+				landing at state s1 when taking action 
+				a at state s0
 		gamma       float - RL discount factor
 		trajs       a list of demonstrations
 		lr          float - learning rate
@@ -197,16 +200,13 @@ def maxent_irl(feat_map, P_a, gamma, trajs, lr=0.1, n_iters=50):
 	feat_exp = feat_exp/len(trajs)
 
 	# training
-	for iteration in range(n_iters):
-	
-		if iteration % (n_iters/20) == 0:
-			print 'iteration: {}/{}'.format(iteration, n_iters)
+	for iteration in tqdm(range(n_iters)):
 		
 		# compute reward function
 		rewards = np.dot(feat_map, theta)
 
 		# compute policy
-		_, policy = value_iteration.value_iteration(P_a, rewards, gamma, error=0.01, deterministic=False)
+		_, policy = value_iteration.value_iteration(P_a, rewards, gamma, error=25., deterministic=False)
 		
 		# compute state visition frequences
 		svf = compute_state_visition_freq(P_a, gamma, trajs, policy, deterministic=False)
@@ -246,20 +246,17 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 	
 	path = args.policy_dir
+	print("[INFO]: ", path)
 	P_s=np.load(os.path.join(path, 'Trans_prob.npy'))
 	trajs = np.load(os.path.join(path,'Trajs.npy'))
 	rew = np.load(os.path.join(path,'Rewards_Gt.npy'))
 	trajs = conv_trajs_to_reqd_format(trajs)
 	shape_Ps = np.shape(P_s)
 	feat_map = np.eye(shape_Ps[0])
-	try:
-		gamma = args[2];lr = args[3]; n_iters = args[4]
-		norm_rewards = maxent_irl(feat_map, P_s, gamma, trajs, lr, n_iters)
-	except Exception as e:
-		norm_rewards = maxent_irl(feat_map, P_s,0.9,trajs)
+	norm_rewards = maxent_irl(feat_map, P_s,0.9,trajs)
 
-	plt.plot(rew)
-	plt.plot(norm_rewards)
+	plt.plot(rew, '*b')
+	plt.plot(norm_rewards, 'or')
 	plt.title('Comparision MaxEntropy and GT rewards, total correlation: {}'.format(np.round(np.mean((rew - norm_rewards)**2), 3)))
 	plt.legend(['GT_rewards', 'MaxEntropy_reward'])
 	plt.ylabel('Reward')
